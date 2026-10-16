@@ -3,69 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Joint-Safe Fitness &amp; Meal Portal</title>
-  <!-- Tailwind CSS -->
+  <title>Toncho's Health Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Vector Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-    .day-content { display: none; }
-    .day-content.active { display: block; }
-    .nav-tab.active {
-      background-color: #eff6ff;
-      color: #1d4ed8;
-      font-weight: 600;
-    }
+    .nav-tab.active { background-color: #eff6ff; color: #1d4ed8; font-weight: 600; }
+    .ph { background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
+    .seg.on { background: #2563eb; color: #fff; border-color: #2563eb; }
+    input[type=range] { min-height: 28px; }
+    button, select, input { touch-action: manipulation; }
+    .cal-cell { min-height: 44px; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen">
 
-  <!-- Main Top Bar -->
+  <!-- ============ HEADER ============ -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md">
-          <i data-lucide="shield-check" class="w-6 h-6"></i>
-        </div>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md font-bold text-sm">TH</div>
         <div>
-          <h1 class="text-lg font-bold text-slate-900 leading-tight">Joint-Safe Coaching Portal</h1>
-          <p class="text-xs text-slate-500 font-medium">Low-Impact Corrective Strength &amp; Gallbladder-Safe Nutrition</p>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">Toncho's Health Portal</h1>
+          <p class="text-xs text-slate-500 font-medium">a plan to reduce weight and increase movement</p>
         </div>
       </div>
 
-      <!-- Navigation Bar -->
       <nav class="flex items-center space-x-1 sm:space-x-2 text-sm font-medium">
-        <button onclick="switchTab('workouts')" id="tab-btn-workouts" class="nav-tab active px-3.5 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
-          <i data-lucide="dumbbell" class="w-4 h-4"></i>
-          <span>4-Day Workouts</span>
+        <button onclick="switchTab('workouts')" id="tab-btn-workouts" class="nav-tab active px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+          <i data-lucide="dumbbell" class="w-4 h-4"></i><span>4-Day Workouts</span>
         </button>
-        <button onclick="switchTab('meals')" id="tab-btn-meals" class="nav-tab px-3.5 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
-          <i data-lucide="utensils" class="w-4 h-4"></i>
-          <span>Meal Plan</span>
+        <button onclick="switchTab('meals')" id="tab-btn-meals" class="nav-tab px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+          <i data-lucide="utensils" class="w-4 h-4"></i><span>Meal Plan</span>
         </button>
-        <button onclick="switchTab('tracker')" id="tab-btn-tracker" class="nav-tab px-3.5 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
-          <i data-lucide="clipboard-check" class="w-4 h-4"></i>
-          <span>Daily Tracker</span>
+        <button onclick="switchTab('tracker')" id="tab-btn-tracker" class="nav-tab px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+          <i data-lucide="clipboard-check" class="w-4 h-4"></i><span>Daily Tracker</span>
         </button>
-
-        <!-- More Dropdown -->
         <div class="relative">
-          <button onclick="toggleMoreMenu()" id="more-menu-btn" class="nav-tab px-3.5 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
-            <i data-lucide="menu" class="w-4 h-4"></i>
-            <span>More</span>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-0.5"></i>
+          <button onclick="toggleMoreMenu(event)" id="tab-btn-more" class="nav-tab px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+            <i data-lucide="menu" class="w-4 h-4"></i><span>More</span><i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-0.5"></i>
           </button>
-          <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50">
-            <button onclick="switchTab('overview'); toggleMoreMenu();" class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
-              <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
-              <span>Client Profile &amp; Protocol</span>
-            </button>
-            <button onclick="switchTab('guide'); toggleMoreMenu();" class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
-              <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i>
-              <span>Plain-English Guide</span>
-            </button>
+          <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50">
+            <button onclick="switchTab('overview')" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i data-lucide="user" class="w-4 h-4 text-blue-600"></i><span>Client Overview</span></button>
+            <button onclick="switchTab('guide')" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i><span>Plain-English Guide</span></button>
+            <button onclick="switchTab('builder')" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i data-lucide="wand-2" class="w-4 h-4 text-indigo-600"></i><span>Exercise Builder (AI)</span></button>
+            <button onclick="switchTab('gem')" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i><span>Gem Coach &amp; Sheets Sync</span></button>
           </div>
         </div>
       </nav>
@@ -74,96 +57,826 @@
 
   <main class="max-w-6xl mx-auto px-4 py-6">
 
-    <!-- TAB 1: 4-DAY WORKOUTS -->
+    <!-- ============ TAB: WORKOUTS ============ -->
     <section id="tab-workouts" class="tab-content active space-y-6">
-      <!-- Top Banner Card -->
-      <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-3xl p-6 shadow-lg">
-        <div class="relative z-10 max-w-2xl">
-          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-200 border border-blue-400/30 mb-3">
+
+      <!-- Hero with visual collage -->
+      <div class="relative overflow-hidden bg-slate-900 text-white rounded-3xl shadow-lg min-h-[190px]">
+        <div class="absolute inset-0 flex opacity-50 md:opacity-80">
+          <div class="flex-1 relative bg-gradient-to-br from-amber-600 to-orange-800">
+            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=70" alt="Morning dog walk" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          </div>
+          <div class="flex-1 relative bg-gradient-to-br from-emerald-600 to-teal-900">
+            <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=70" alt="Forest path" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          </div>
+          <div class="flex-1 relative bg-gradient-to-br from-blue-600 to-indigo-900">
+            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=600&q=70" alt="Home strength training" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/85 to-slate-900/10"></div>
+        <div class="relative z-10 max-w-xl p-6 sm:p-8">
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-100 border border-blue-400/30 mb-3">
             <i data-lucide="activity" class="w-3 h-3"></i> Joint Safeguard Protocol Active
           </span>
           <h2 class="text-2xl font-extrabold sm:text-3xl">4-Day Corrective Strength Routine</h2>
-          <p class="text-slate-300 text-sm mt-2 leading-relaxed">
-            30-minute morning dog walking baseline paired with 20 minutes of knee-stabilizing, spine-neutral resistance training.
-          </p>
+          <p class="text-slate-200 text-sm mt-2 leading-relaxed">Schedule: 30 minutes morning dog walk plus 20 minutes corrective session, 4 days a week.</p>
         </div>
-        <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80" 
-             alt="Fitness Training" 
-             class="absolute right-0 top-0 bottom-0 w-1/3 object-cover opacity-20 hidden md:block">
       </div>
 
-      <!-- Day Navigation Selector -->
+      <!-- Day switcher -->
       <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
         <span class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2">Select Workout:</span>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="switchDay(1)" id="day-btn-1" class="day-tab px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-sm transition">
-            Day 1: Back &amp; Glutes
-          </button>
-          <button onclick="switchDay(2)" id="day-btn-2" class="day-tab px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-semibold text-sm hover:bg-slate-200 transition">
-            Day 2: Upper Stability
-          </button>
-          <button onclick="switchDay(3)" id="day-btn-3" class="day-tab px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-semibold text-sm hover:bg-slate-200 transition">
-            Day 3: Knee Support
-          </button>
-          <button onclick="switchDay(4)" id="day-btn-4" class="day-tab px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-semibold text-sm hover:bg-slate-200 transition">
-            Day 4: Core &amp; Posture
-          </button>
+        <div id="day-buttons" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Warm-up -->
+      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-3xl p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+          <div class="flex items-center gap-2 text-blue-900 font-bold text-sm"><i data-lucide="flame" class="w-4 h-4 text-blue-600"></i><span id="warm-title">3-Minute Joint Warm-Up (Perform Before Every Session)</span></div>
+          <span class="text-xs font-semibold text-blue-700 bg-white/80 border border-blue-200 rounded-full px-3 py-1">3 × 1 minute</span>
+        </div>
+        <p id="warm-focus" class="text-xs text-slate-600 mb-4"></p>
+        <div id="warm-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- Exercises -->
+      <div id="exercise-list" class="space-y-6"></div>
+    </section>
+
+    <!-- ============ TAB: MEALS ============ -->
+    <section id="tab-meals" class="tab-content space-y-6">
+      <div class="relative overflow-hidden bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-3xl p-6 shadow-lg">
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 mb-3"><i data-lucide="shield" class="w-3 h-3"></i> Gallbladder-Friendly Protocol</span>
+          <h2 class="text-2xl font-extrabold sm:text-3xl">7-Day Weekly Meal Planner</h2>
+          <p class="text-emerald-100 text-sm mt-2">About 1,950 kcal/day for steady fat loss from 91 kg toward 85 kg. Lean protein, moderate healthy fats, no raw garlic, no chili or spicy seasoning.</p>
         </div>
       </div>
 
-      <!-- 3-Minute Warm-Up Box -->
-      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-5">
-        <div class="flex items-center gap-2 mb-2 text-blue-900 font-bold text-sm">
-          <i data-lucide="flame" class="w-4 h-4 text-blue-600"></i>
-          <span>Mandatory 3-Minute Joint Activation (Do This First):</span>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-700">
-          <div class="bg-white/80 p-3 rounded-xl border border-blue-100">
-            <strong>1. Supine Belly Breathing:</strong> 1 min deep diaphragmatic breathing to depress lumbar tension.
-          </div>
-          <div class="bg-white/80 p-3 rounded-xl border border-blue-100">
-            <strong>2. Bodyweight Glute Bridge:</strong> 10 slow reps focusing strictly on glute contraction.
-          </div>
-          <div class="bg-white/80 p-3 rounded-xl border border-blue-100">
-            <strong>3. Hands &amp; Knees Cat-Cow:</strong> 1 min gentle fluid spinal flexion and extension.
-          </div>
-        </div>
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+        <div id="meal-days" class="flex flex-wrap gap-2"></div>
+        <button onclick="resetMeals()" class="text-xs font-semibold text-slate-500 hover:text-rose-600 px-3 py-2.5 rounded-xl hover:bg-slate-50">Reset week's check-offs</button>
       </div>
 
-      <!-- DAY 1 CONTENT -->
-      <div id="day-content-1" class="day-content active space-y-6">
-        
-        <!-- Exercise 1 Feature Card: Bench Hip Thrust -->
-        <div class="bg-white border-2 border-blue-500 rounded-3xl p-6 shadow-md">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Exercise 1 • Posterior Chain</span>
-              <h3 class="text-xl font-bold text-slate-900">Bench Hip Thrust (Glute Bridge)</h3>
+      <div id="meal-summary" class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"></div>
+      <div id="meal-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- ============ TAB: TRACKER ============ -->
+    <section id="tab-tracker" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Calendar -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-4">
+          <h2 class="text-lg font-bold text-slate-900">Daily Tracker</h2>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Date</label>
+            <input type="date" id="date-pick" onchange="pickDate(this.value)" class="w-full border border-slate-300 rounded-xl p-3 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <button onclick="calMove(-1)" class="w-11 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold" aria-label="Previous month">‹</button>
+              <span id="cal-title" class="text-sm font-bold text-slate-800"></span>
+              <button onclick="calMove(1)" class="w-11 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold" aria-label="Next month">›</button>
             </div>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
-              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Form-Checked Guide
-            </span>
+            <div class="grid grid-cols-7 text-center text-[11px] font-semibold text-slate-400 mb-1">
+              <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+            </div>
+            <div id="cal-grid" class="grid grid-cols-7 gap-1 text-sm"></div>
+            <p class="text-[11px] text-slate-400 mt-2"><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 align-middle"></span> = day has a saved log</p>
+          </div>
+        </div>
+
+        <!-- Log form -->
+        <div class="lg:col-span-2 bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-sm space-y-5" oninput="saveForm()" onchange="normalizeInputs(); saveForm()">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-base font-bold text-slate-900">Log for <span id="log-date-label" class="text-blue-600"></span></h3>
+            <span id="save-msg" class="text-xs text-emerald-600 font-semibold opacity-0 transition-opacity">✓ Saved</span>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 space-y-4">
-              <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm space-y-2">
-                <p class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <i data-lucide="list-ordered" class="w-4 h-4 text-blue-600"></i> Step-by-Step Directions:
-                </p>
-                <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
-                  <li>Sit on your yoga mat with your upper back and shoulder blades resting firmly against the long edge of your workout bench.</li>
-                  <li>Bend your knees with feet planted flat on the floor, hip-width apart.</li>
-                  <li><strong>Push firmly through your heels (not your toes)</strong> and drive your hips upward until your torso and thighs form a flat horizontal tabletop.</li>
-                  <li>Squeeze your glutes tight at the top for <strong>2 full seconds</strong>.</li>
-                  <li>Gently lower your hips down until you almost touch the mat, then immediately repeat.</li>
-                </ol>
-              </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Morning 30-min Dog Walk</label>
+              <div id="seg-walk" class="flex flex-wrap gap-2"></div>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">20-min Corrective Routine</label>
+              <div id="seg-routine" class="flex flex-wrap gap-2"></div>
+            </div>
+          </div>
 
-              <!-- Critical Form Safeguards -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-900">
-                  <strong class="flex items-center gap-1 text-emerald-800 mb-1">
-                    <i data-lucide="check" class="w-4 h-4"></i> Upper Arms Across Bench
-                  </strong>
-                  Rest the back of your arms/elbows flat on top of the bench cushion (or cross them over your chest).
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Joint Discomfort (1 = none, 10 = severe)</p>
+            <div id="pain-sliders" class="space-y-3"></div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Morning weight (kg)</label>
+              <input type="number" step="0.1" min="30" max="300" id="f-weight" placeholder="91.0" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Daily steps</label>
+              <input type="number" step="1" min="0" id="f-steps" placeholder="8000" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Apple Watch active kcal</label>
+              <input type="number" step="1" min="0" id="f-apple" placeholder="250" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">Total Daily Active Burn</p>
+            <p class="text-3xl font-extrabold mt-1"><span id="sum-total">0</span> kcal</p>
+            <p class="text-xs text-blue-100 mt-1"><span id="sum-steps">0</span> kcal from steps (steps × 0.04) + <span id="sum-apple">0</span> kcal Apple workouts</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-base font-bold text-slate-900">Historical Activity</h3>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="exportCSV()" class="text-xs font-semibold px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200">Download CSV</button>
+            <button onclick="clearData()" class="text-xs font-semibold px-3 py-2.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100">Clear Data</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase text-slate-400 border-b border-slate-200">
+              <tr><th class="py-2 pr-3">Date</th><th class="py-2 pr-3">Weight</th><th class="py-2 pr-3">Pain (K / B / S)</th><th class="py-2 pr-3">Workout</th><th class="py-2">Total kcal burned</th></tr>
+            </thead>
+            <tbody id="hist-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB: OVERVIEW ============ -->
+    <section id="tab-overview" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+        <h2 class="text-xl font-bold text-slate-900">Client Overview &amp; Joint Safeguards</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200"><p class="text-xs text-slate-400 uppercase font-semibold">Age / Sex</p><p class="font-bold text-slate-900 mt-1">54 Years • Male</p></div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200"><p class="text-xs text-slate-400 uppercase font-semibold">Height</p><p class="font-bold text-slate-900 mt-1">180 cm</p></div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200"><p class="text-xs text-slate-400 uppercase font-semibold">Starting Weight</p><p class="font-bold text-slate-900 mt-1">91 kg</p></div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200"><p class="text-xs text-slate-400 uppercase font-semibold">Target Weight</p><p class="font-bold text-emerald-600 mt-1">85 kg (-6 kg)</p></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+          <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4"><strong class="text-blue-900">Joints</strong><p class="text-slate-700 mt-1 text-xs">Knee-stabilizing work, spine-neutral positions, no overhead loading.</p></div>
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4"><strong class="text-emerald-900">Nutrition</strong><p class="text-slate-700 mt-1 text-xs">Gallbladder-friendly: lean protein, moderate fats, no raw garlic, no chili.</p></div>
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4"><strong class="text-amber-900">Movement</strong><p class="text-slate-700 mt-1 text-xs">30-minute morning dog walk daily plus a 20-minute session, 4 days a week.</p></div>
+        </div>
+        <p class="text-xs text-slate-500">This plan is general guidance, not medical advice. Stop any exercise that causes sharp pain and check with your doctor or physiotherapist about your knees, back and gallbladder.</p>
+      </div>
+    </section>
+
+    <!-- ============ TAB: GUIDE ============ -->
+    <section id="tab-guide" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+        <h2 class="text-xl font-bold text-slate-900">Plain-English Exercise Dictionary</h2>
+        <div class="space-y-3 text-sm text-slate-700">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200"><strong>Sets and Reps:</strong> "3 sets × 10 reps" means doing 10 repetitions, resting for the listed time, and repeating that cycle 3 times in total.</div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200"><strong>Tempo (2-2-2):</strong> 2 seconds lifting, 2 seconds holding, 2 seconds lowering. Slow is safer for joints.</div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200"><strong>Heel Drive:</strong> Pressing through your heels rather than the balls of your feet. This works the glutes and takes load off the knees.</div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200"><strong>Neutral Spine:</strong> Keeping the spine in its natural S-curve without bending forward or arching backward.</div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200"><strong>Isometric:</strong> Holding a position still while the muscle works, for example a bridge hold.</div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200"><strong>Anti-rotation / Anti-extension:</strong> Core exercises where the job is to stop your trunk from twisting or arching.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB: EXERCISE BUILDER ============ -->
+    <section id="tab-builder" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Exercise Builder (AI)</h2>
+          <p class="text-sm text-slate-600 mt-1">Edit any exercise or warm-up here, or paste JSON created by your Gem or another AI. Changes are saved in this browser and appear on the Workouts tab immediately.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="space-y-3">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Day</label>
+            <select id="ed-day" onchange="edRender()" class="w-full border border-slate-300 rounded-xl p-3 text-sm bg-white"></select>
+            <div id="ed-list" class="space-y-2"></div>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button onclick="edNew()" class="px-3 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700">+ New exercise template</button>
+              <button onclick="edLoadWarm()" class="px-3 py-2.5 rounded-xl bg-slate-100 text-xs font-semibold hover:bg-slate-200">Edit this day's warm-up</button>
+              <button onclick="edResetAll()" class="px-3 py-2.5 rounded-xl bg-rose-50 text-rose-700 text-xs font-semibold hover:bg-rose-100">Reset all to defaults</button>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Exercise / warm-up JSON</label>
+            <textarea id="ed-json" rows="16" spellcheck="false" class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Pick an exercise on the left, or paste JSON here."></textarea>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="edSaveExercise()" class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">Save as exercise</button>
+              <button onclick="edSaveWarm()" class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Save as warm-up</button>
+            </div>
+            <p id="ed-msg" class="text-xs font-semibold min-h-[1rem]"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-3">
+        <h3 class="text-base font-bold text-slate-900">Ask an AI to write an exercise</h3>
+        <p class="text-sm text-slate-600">Copy this prompt into your Gem (or any AI), describe the exercise you want, then paste its JSON reply into the box above.</p>
+        <textarea id="ed-prompt" rows="10" readonly class="w-full border border-slate-200 bg-slate-50 rounded-xl p-3 text-xs font-mono"></textarea>
+        <button onclick="copyEl('ed-prompt', this)" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700">Copy prompt</button>
+      </div>
+    </section>
+
+    <!-- ============ TAB: GEM ============ -->
+    <section id="tab-gem" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+        <h2 class="text-xl font-bold text-slate-900">Gem Coach</h2>
+        <p class="text-sm text-slate-600">Your Gem link is a shared chat, and a web page cannot be given access to it. The reliable route is a two-step hand-off that takes about 20 seconds:</p>
+        <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1">
+          <li>Press <strong>Copy coach report</strong> (your last 14 days of tracker data plus instructions).</li>
+          <li>Press <strong>Open my Gem</strong>, paste, and send. Paste any JSON it returns into <em>More → Exercise Builder (AI)</em>.</li>
+        </ol>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="copyReport(this)" class="px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold">Copy coach report</button>
+          <a href="https://gemini.google.com/share/d/1A9Yc3aHIlxIRfaym6gBYizKyceylDNZL?usp=sharing" target="_blank" rel="noopener" class="px-4 py-3 rounded-xl bg-amber-100 text-amber-900 text-sm font-semibold hover:bg-amber-200">Open my Gem ↗</a>
+        </div>
+        <textarea id="gem-report" rows="8" readonly class="w-full border border-slate-200 bg-slate-50 rounded-xl p-3 text-xs font-mono"></textarea>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-3">
+        <h3 class="text-base font-bold text-slate-900">Optional: back up the log to Google Sheets</h3>
+        <p class="text-sm text-slate-600">Browsers cannot write to your Google account without a sign-in step, so this uses a tiny script that you own.</p>
+        <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1">
+          <li>Create a new Google Sheet, then <strong>Extensions → Apps Script</strong>.</li>
+          <li>Paste the script below, then <strong>Deploy → New deployment → Web app</strong>, execute as <em>Me</em>, access <em>Anyone</em>.</li>
+          <li>Paste the web-app URL here and press Save URL, then Send history.</li>
+        </ol>
+        <pre class="bg-slate-900 text-slate-100 text-xs rounded-xl p-4 overflow-x-auto">function doPost(e) {
+  var rows = JSON.parse(e.postData.contents);
+  var sh = SpreadsheetApp.getActiveSheet();
+  sh.clearContents();
+  sh.appendRow(["Date","Weight","Knee","Back","Shoulder","Walk","Routine","Steps","Apple kcal","Total kcal"]);
+  rows.forEach(function (r) { sh.appendRow(r); });
+  return ContentService.createTextOutput("ok");
+}</pre>
+        <div class="flex flex-wrap gap-2">
+          <input id="sheet-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 min-w-[220px] border border-slate-300 rounded-xl p-3 text-sm">
+          <button onclick="saveSheetUrl()" class="px-4 py-2.5 rounded-xl bg-slate-100 text-sm font-semibold hover:bg-slate-200">Save URL</button>
+          <button onclick="sendSheet()" class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">Send history</button>
+        </div>
+        <p id="sheet-msg" class="text-xs font-semibold min-h-[1rem]"></p>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+/* ================= Helpers ================= */
+const GEM_URL = "https://gemini.google.com/share/d/1A9Yc3aHIlxIRfaym6gBYizKyceylDNZL?usp=sharing";
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function icons() { if (window.lucide) lucide.createIcons(); }
+function imgFail(el) {
+  if (el.dataset.fb && !el.dataset.tried) { el.dataset.tried = "1"; el.src = el.dataset.fb; }
+  else { el.style.display = "none"; }
+}
+function img(src, fb, alt, cls) {
+  return '<img src="' + esc(src) + '" data-fb="' + esc(fb || "") + '" alt="' + esc(alt) + '" class="' + cls + '" onerror="imgFail(this)">';
+}
+function todayStr() { return new Date().toLocaleDateString("en-CA"); }
+
+/* ================= Default plan data ================= */
+const U = id => "https://images.unsplash.com/photo-" + id + "?auto=format&fit=crop&w=800&q=75";
+const IMG = {
+  fit: U("1517838277536-f5f99be501cd"), row: U("1581009146145-b5ef050c2e1e"), core: U("1518611012118-696072aa579a"),
+  press: U("1534438327276-14e5300c3a48"), band: U("1598971639058-fab3c3109a00"), carry: U("1476480862126-209bfaa8edc8"),
+  step: U("1434682881908-b43d0467b798"), ham: U("1540497077202-7c8a3999166f")
+};
+
+const DEFAULT_PLAN = { days: [
+{ label: "Day 1", name: "Back & Glutes", warmupTitle: "Day 1 Warm-Up: Glute & Posterior Chain Activation",
+  warmupFocus: "Waking up hip extensors to stabilize the knees and depress lower back tension.",
+  warmup: [
+    { title: "Supine Diaphragmatic Belly Breathing", time: "1 Minute", img: "warmup_belly_breathing.jpg", fb: IMG.fit,
+      steps: ["Lie flat on your yoga mat with knees bent and feet flat on the floor.", "Place one hand on your chest and one on your belly.", "Inhale deeply through your nose for 4 seconds, expanding your belly while keeping your lower back flush against the floor. Exhale slowly for 6 seconds."],
+      safety: "Deactivates tense lumbar muscles and readies core stabilizers before lifting." },
+    { title: "Bodyweight Glute Bridge Holds", time: "1 Minute", img: "warmup_glute_bridge.jpg", fb: IMG.fit,
+      steps: ["Press your arms gently into the mat and drive upward through your heels.", "Lift your hips until your thighs and torso form a straight line.", "Squeeze your glutes at the top for 2 full seconds, lower under control, and repeat for 10 slow reps."],
+      safety: "Pre-activates gluteal muscles to protect the posterior knee joint capsules and hamstring tendons." },
+    { title: "Hands-and-Knees Cat-Cow Flow", time: "1 Minute", img: "warmup_cat_cow.jpg", fb: IMG.core,
+      steps: ["Start on all fours with wrists under shoulders and knees directly under hips.", "Gently arch your back downward while inhaling (Cow), then slowly round your upper back toward the ceiling while exhaling (Cat).", "Move slowly through a comfortable, pain-free range of motion for 60 seconds."],
+      safety: "Lubricates spinal discs without applying vertical compression forces." }
+  ],
+  exercises: [
+    { id: "d1-hip-thrust", title: "Bench Hip Thrust (Glute Bridge)", badge: "Posterior Chain • Knee Safe", equipment: "Workout bench + yoga mat • Bodyweight first",
+      img: "glute_bridge-Day1.png", fb: IMG.fit,
+      steps: ["Sit on the mat with your upper back and shoulder blades resting against the long side of the bench.", "Bend your knees with feet flat on the floor, hip-width apart. Keep your core engaged.", "Push firmly through your heels (not your toes) and drive your hips up until your torso and thighs form a flat tabletop.", "Squeeze your glutes tight at the top for 2 full seconds.", "Gently lower your hips until they almost touch the mat, then repeat."],
+      checks: [
+        { ok: true, title: "Upper arms on the bench", text: "Rest the backs of your upper arms flat on the bench pad to support your torso." },
+        { ok: true, title: "Alternative", text: "Cross your arms loosely over your chest." },
+        { ok: false, title: "Do not place hands on the floor", text: "It twists the wrists and pinches neck and trapezius muscles." },
+        { ok: true, title: "Gaze", text: "Look forward toward your knees, not straight up at the ceiling." }
+      ],
+      rx: { sets: "3", reps: "10–12", rest: "60 seconds", tempo: "2s up • 2s hold • 2s down", load: "Bodyweight first" },
+      why: "Driving through the heels strengthens the glutes and takes pressure off the back of the knee joint." },
+    { id: "d1-cs-row", title: "Chest-Supported Dumbbell Row", badge: "Upper Back • Spine Protected", equipment: "Inclined bench + dumbbells • 4–6 kg each",
+      img: IMG.row, fb: IMG.row,
+      steps: ["Set the bench at a low incline and lie chest-down on it, feet on the floor.", "Let the dumbbells hang straight down with palms facing each other.", "Pull both dumbbells up toward your hip pockets, driving your elbows back.", "Squeeze your shoulder blades together for 1 second at the top.", "Lower slowly until your arms are straight, keeping your neck relaxed."],
+      checks: [
+        { ok: true, title: "Chest fully on the pad", text: "The bench carries your torso weight so the lower back stays unloaded." },
+        { ok: true, title: "Neck neutral", text: "Look at the floor just ahead of you, ears in line with your spine." },
+        { ok: false, title: "Do not shrug", text: "Lifting the shoulders to the ears overloads the neck." }
+      ],
+      rx: { sets: "3", reps: "10", rest: "60 seconds", tempo: "1s up • 1s squeeze • 3s down", load: "4–6 kg each hand" },
+      why: "The bench supports 100% of your torso, protecting the lumbar discs from standing shear load." },
+    { id: "d1-dead-bug", title: "Dead Bug (Core Anti-Extension)", badge: "Core • Lumbar Safe", equipment: "Yoga mat • Bodyweight",
+      img: IMG.core, fb: IMG.core,
+      steps: ["Lie on your back with arms pointing to the ceiling and knees bent at 90°.", "Press your lower back flush into the mat and keep it there.", "Slowly extend your right arm overhead and left leg out, hovering above the floor.", "Return to the start with control, then switch sides.", "Breathe out as you extend, in as you return."],
+      checks: [
+        { ok: true, title: "Back flat", text: "If your lower back lifts off the mat, shorten the range." },
+        { ok: true, title: "Slow and controlled", text: "Speed hides poor core control." },
+        { ok: false, title: "No crunching or neck pulling", text: "Keep your head resting on the mat." }
+      ],
+      rx: { sets: "3", reps: "8 per side", rest: "45 seconds", tempo: "3s out • 3s back", load: "Bodyweight" },
+      why: "It replaces sit-ups and crunches, so there is no flexion strain on the lumbar vertebrae." }
+  ] },
+
+{ label: "Day 2", name: "Upper Stability", warmupTitle: "Day 2 Warm-Up: Upper-Body & Shoulder Mobility",
+  warmupFocus: "Opening the chest and activating mid-back posture muscles to prevent neck and shoulder impingement.",
+  warmup: [
+    { title: "Supine Arm Angles (Floor W-to-Y Slide)", time: "1 Minute", img: "warmup_floor_w_y.jpg", fb: IMG.press,
+      steps: ["Lie flat on your back on your mat with knees bent.", "Place your arms on the floor in a “W” shape with elbows tucked near your sides.", "Gently slide the backs of your hands along the floor upward into a “Y” overhead, keeping wrists grounded, then pull back down."],
+      safety: "Restricts upper-arm elevation to ground level, eliminating shoulder joint pinching." },
+    { title: "Standing Resistance Band Pull-Apart (Light)", time: "1 Minute", img: "warmup_band_pullapart.jpg", fb: IMG.band,
+      steps: ["Stand tall holding a light resistance band at arm's length at chest height.", "Pull the band open by squeezing your shoulder blades together until the band lightly touches your breastbone.", "Pause for 1 second, then return with control. Repeat for 12–15 reps."],
+      safety: "Offloads neck tension (trapezius) by firing the rhomboids and rear deltoids." },
+    { title: "Quadruped Thoracic Rotations", time: "1 Minute", img: "warmup_thoracic_rotations.jpg", fb: IMG.core,
+      steps: ["Start on hands and knees; place your left hand behind your neck with your elbow pointed out.", "Rotate your left elbow down toward your right wrist, then gently sweep the elbow upward toward the ceiling.", "Complete 30 seconds on the left side, then switch to the right side."],
+      safety: "Unlocks mid-back mobility so your neck and lower back do not compensate during presses." }
+  ],
+  exercises: [
+    { id: "d2-floor-press", title: "Floor Dumbbell Press", badge: "Chest • Shoulder Safe", equipment: "Yoga mat + dumbbells • 5–8 kg each",
+      img: IMG.press, fb: IMG.press,
+      steps: ["Lie on your back on the mat, knees bent, feet flat.", "Hold the dumbbells above your chest with palms facing your feet or each other.", "Lower slowly until your upper arms lightly touch the floor.", "Pause for 1 second without relaxing into the floor.", "Press back up until your arms are straight but not locked."],
+      checks: [
+        { ok: true, title: "Elbows at about 45°", text: "Angle your upper arms about halfway between flared and tucked." },
+        { ok: true, title: "Floor is your stop", text: "The mat limits depth so the shoulder joint is never over-stretched." },
+        { ok: false, title: "Do not bounce off the floor", text: "Pause, then press." }
+      ],
+      rx: { sets: "3", reps: "10", rest: "60 seconds", tempo: "2s up • 1s pause • 3s down", load: "5–8 kg each hand" },
+      why: "Elbows stop at the mat, avoiding shoulder hyperextension while the chest and triceps do the work." },
+    { id: "d2-band-pull-apart", title: "Resistance Band Pull-Apart", badge: "Upper Back • Neck Relief", equipment: "Light resistance band",
+      img: IMG.band, fb: IMG.band,
+      steps: ["Stand tall, feet hip-width apart, holding the band at chest height with straight arms.", "Gently tuck your chin and keep your ribs down.", "Pull the band apart until it touches your chest.", "Squeeze your shoulder blades together for 1 second.", "Return slowly to the start."],
+      checks: [
+        { ok: true, title: "Shoulders down", text: "Keep them away from your ears throughout." },
+        { ok: true, title: "Arms level", text: "Stay at chest height, not overhead." },
+        { ok: false, title: "Do not arch your lower back", text: "Brace your stomach lightly." }
+      ],
+      rx: { sets: "3", reps: "15", rest: "45 seconds", tempo: "1s pull • 1s squeeze • 2s return", load: "Light band" },
+      why: "It strengthens the mid-back that holds your posture, directly relieving neck and trapezius stiffness." },
+    { id: "d2-suitcase-carry", title: "Suitcase Carry March", badge: "Core • Anti-Lateral", equipment: "One dumbbell • 6–8 kg",
+      img: IMG.carry, fb: IMG.carry,
+      steps: ["Hold one dumbbell at your side like a suitcase and stand tall.", "Keep your shoulders level and ribs stacked over your hips.", "March slowly in place, lifting each knee to hip height or lower.", "Resist leaning toward the weighted side.", "After the set, switch hands and repeat."],
+      checks: [
+        { ok: true, title: "Shoulders level", text: "Imagine balancing a tray on your shoulders." },
+        { ok: true, title: "Knee height", text: "Lift only as high as stays pain-free." },
+        { ok: false, title: "Do not lean away from the weight", text: "That shifts the load into your spine." }
+      ],
+      rx: { sets: "3", reps: "45 seconds per side", rest: "45 seconds", tempo: "Slow, steady march", load: "6–8 kg" },
+      why: "It trains the side core muscles to keep the spine upright without any spinal bending." }
+  ] },
+
+{ label: "Day 3", name: "Knee Support", warmupTitle: "Day 3 Warm-Up: Knee Alignment & Ankle Mobility",
+  warmupFocus: "Preparing ankle dorsiflexion and hamstring tendons to eliminate knee clicking and popping.",
+  warmup: [
+    { title: "Standing Ankle & Calf Mobilization", time: "1 Minute", img: "warmup_ankle_mobilization.jpg", fb: IMG.step,
+      steps: ["Stand facing a wall with hands lightly resting on it for balance.", "Place one foot 4 inches from the wall and keep the heel firmly planted.", "Gently drive your knee forward directly over your middle toe until you feel a soft calf stretch. Repeat 10 times per leg."],
+      safety: "Improves ankle flexibility, preventing knees from collapsing inward during step-ups." },
+    { title: "Standing Side-to-Side Leg Swings (Controlled)", time: "1 Minute", img: "warmup_leg_swings.jpg", fb: IMG.step,
+      steps: ["Hold onto your workout bench or wall for balance support.", "Swing one leg gently across the front of your body, then outward to the side in a smooth, pendulum motion.", "Complete 12 slow swings per leg without snapping or forcing end ranges."],
+      safety: "Warms up hip abductors and adductors to stabilize knee tracking." },
+    { title: "Standing Hamstring Heel Touches", time: "1 Minute", img: "warmup_hamstring_touches.jpg", fb: IMG.ham,
+      steps: ["Stand tall; alternate pulling your right heel to your right glute, then your left heel to your left glute.", "Perform gentle, rhythmic butt-kicks in place without jumping.", "Keep your knees pointing straight down toward the floor throughout."],
+      safety: "Circulates synovial fluid directly through the hamstring insertion point behind the knee." }
+  ],
+  exercises: [
+    { id: "d3-step-up", title: "Low Box Step-Ups", badge: "Quads & Glutes • Knee Tracking", equipment: "Low sturdy step or bench end • Bodyweight",
+      img: IMG.step, fb: IMG.step,
+      steps: ["Stand facing a low, stable platform (about knee height or lower).", "Place your whole right foot on the platform.", "Press through the heel and stand up tall without pushing off the back foot.", "Lower slowly with control, tapping the floor lightly.", "Finish all reps on one leg, then switch."],
+      checks: [
+        { ok: true, title: "Knee over middle toe", text: "Do not let the knee collapse inward." },
+        { ok: true, title: "Whole foot planted", text: "Heel stays flat on the step." },
+        { ok: false, title: "Do not bounce or rush", text: "Control the lowering phase." },
+        { ok: true, title: "Hold a wall if needed", text: "Light fingertip support is fine." }
+      ],
+      rx: { sets: "3", reps: "8 per leg", rest: "60 seconds", tempo: "2s up • 1s top • 3s down", load: "Bodyweight" },
+      why: "Working one leg at a time with a low step builds knee stability without deep knee bending." },
+    { id: "d3-ham-curl", title: "Banded Hamstring Curls", badge: "Hamstrings • Posterior Knee", equipment: "Light resistance band + bench leg",
+      img: IMG.ham, fb: IMG.ham,
+      steps: ["Anchor the band to a sturdy bench leg and loop the other end around one ankle.", "Lie face down on the mat with legs straight and head resting on your hands.", "Curl your heel toward your buttocks against the band.", "Pause for 1 second at the top.", "Lower slowly until the leg is straight again."],
+      checks: [
+        { ok: true, title: "Hips stay down", text: "Keep your pelvis pressed into the mat." },
+        { ok: true, title: "Smooth range", text: "Stop before any pinching behind the knee." },
+        { ok: false, title: "Do not swing the leg", text: "Momentum takes the work off the muscle." }
+      ],
+      rx: { sets: "3", reps: "12 per leg", rest: "45 seconds", tempo: "2s curl • 1s hold • 3s lower", load: "Light band" },
+      why: "Strong hamstrings share the load with the ligaments behind the knee and help stabilise the joint." },
+    { id: "d3-bird-dog", title: "Bird-Dog Hold", badge: "Core & Back • Spine Neutral", equipment: "Yoga mat • Bodyweight",
+      img: IMG.core, fb: IMG.core,
+      steps: ["Start on all fours, wrists under shoulders, knees under hips.", "Set a flat back, as if balancing a cup of water on it.", "Extend your right arm forward and your left leg straight back.", "Hold for 3 seconds at tabletop height.", "Return to the centre and switch sides."],
+      checks: [
+        { ok: true, title: "Level hips", text: "Do not let your pelvis rotate open." },
+        { ok: true, title: "Neck long", text: "Look at the floor between your hands." },
+        { ok: false, title: "Do not lift above hip height", text: "Higher arches your lower back." },
+        { ok: true, title: "Pad your knees", text: "Fold the mat if your knees complain." }
+      ],
+      rx: { sets: "3", reps: "8 per side", rest: "45 seconds", tempo: "2s reach • 3s hold • 2s return", load: "Bodyweight" },
+      why: "It builds back and core endurance with a neutral spine and very little joint compression." }
+  ] },
+
+{ label: "Day 4", name: "Core & Posture", warmupTitle: "Day 4 Warm-Up: Full Core Anti-Rotation & Posture",
+  warmupFocus: "Firing deep abdominal walls and spinal rotators before posture and carry work.",
+  warmup: [
+    { title: "Bird-Dog Hold & Reach", time: "1 Minute", img: "warmup_birddog.jpg", fb: IMG.core,
+      steps: ["Start on all fours with a neutral, flat spine (imagine holding a cup of water on your lower back).", "Extend your right arm forward and left leg straight backward simultaneously.", "Hold for 3 seconds at tabletop height, return to center, and alternate sides."],
+      safety: "Trains anti-rotation core strength without twisting spinal vertebrae." },
+    { title: "Standing Tall Arm & Shoulder Circles", time: "1 Minute", img: "warmup_arm_circles.jpg", fb: IMG.band,
+      steps: ["Stand tall with core engaged and feet hip-width apart.", "Extend arms out to the sides at shoulder height (or slightly lower if painful).", "Make small, controlled forward circles for 30 seconds, then reverse directions for 30 seconds."],
+      safety: "Increases blood flow to rotator cuff tendons without overhead stress." },
+    { title: "Standing Hip Hinge (Hands on Thighs)", time: "1 Minute", img: "warmup_hip_hinge.jpg", fb: IMG.fit,
+      steps: ["Stand tall with hands resting on the fronts of your thighs.", "Softly bend your knees and push your hips backward as if touching a wall behind you with your glutes.", "Slide your hands down to knee level while keeping your back flat, squeeze your glutes to stand tall, and repeat."],
+      safety: "Rehearses the hip-hinge pattern so the hips do the lifting instead of the lower back." }
+  ],
+  exercises: [
+    { id: "d4-neutral-row", title: "Neutral-Grip Bench Row", badge: "Upper Back • Shoulder Safe", equipment: "Bench + dumbbells • 5–7 kg each",
+      img: IMG.row, fb: IMG.row,
+      steps: ["Lie chest-down on the inclined bench, dumbbells hanging with palms facing each other.", "Keep your head in line with your spine.", "Row both dumbbells toward your ribs, elbows close to your body.", "Squeeze your shoulder blades for 1 second.", "Lower slowly to full arm length."],
+      checks: [
+        { ok: true, title: "Palms face each other", text: "Neutral grip keeps space inside the shoulder joint." },
+        { ok: true, title: "Elbows close", text: "Pull elbows back, not out wide." },
+        { ok: false, title: "Do not twist your torso", text: "Both sides move together." }
+      ],
+      rx: { sets: "3", reps: "10", rest: "60 seconds", tempo: "1s up • 1s squeeze • 3s down", load: "5–7 kg each hand" },
+      why: "A neutral grip preserves joint space inside the shoulder socket and avoids pinching." },
+    { id: "d4-bridge-hold", title: "Isometric Bridge Hold", badge: "Glutes • Hip Endurance", equipment: "Yoga mat • Bodyweight",
+      img: IMG.fit, fb: IMG.fit,
+      steps: ["Lie on your back, knees bent, feet flat and hip-width apart.", "Drive through your heels and lift your hips to a flat tabletop.", "Hold the position and breathe steadily.", "Keep your ribs down and your glutes squeezed.", "Lower slowly when the timer ends."],
+      checks: [
+        { ok: true, title: "Heels do the work", text: "Toes may lightly lift if that feels better." },
+        { ok: true, title: "Ribs down", text: "Do not arch the lower back to go higher." },
+        { ok: false, title: "Do not hold your breath", text: "Breathe in through the nose, out through the mouth." }
+      ],
+      rx: { sets: "3", reps: "30-second hold", rest: "45 seconds", tempo: "Static hold", load: "Bodyweight" },
+      why: "Static holds build hip endurance without repetitive movement through the knee joint." },
+    { id: "d4-ext-rot", title: "Band External Rotations", badge: "Rotator Cuff • Shoulder Health", equipment: "Light resistance band + small towel",
+      img: IMG.band, fb: IMG.band,
+      steps: ["Anchor the band at elbow height and stand side-on to it.", "Tuck a small towel between your elbow and ribs.", "Hold the band with the inside hand, elbow bent at 90°.", "Rotate your forearm outward, away from your belly.", "Return slowly. Finish the set, then switch sides."],
+      checks: [
+        { ok: true, title: "Towel stays put", text: "If it drops, your elbow drifted away from your side." },
+        { ok: true, title: "Small, smooth motion", text: "Only the forearm moves." },
+        { ok: false, title: "Do not shrug", text: "Keep the shoulder blade relaxed and down." }
+      ],
+      rx: { sets: "3", reps: "12 per side", rest: "45 seconds", tempo: "2s out • 3s back", load: "Light band" },
+      why: "It strengthens the small rotator cuff muscles that keep the shoulder centred in its socket." }
+  ] }
+] };
+
+/* ================= Plan state ================= */
+let PLAN = store.get("tp_plan", null) || JSON.parse(JSON.stringify(DEFAULT_PLAN));
+let curDay = 0;
+function savePlan() { store.set("tp_plan", PLAN); }
+
+/* ================= Navigation ================= */
+function switchTab(id) {
+  document.querySelectorAll(".tab-content").forEach(e => e.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(e => e.classList.remove("active"));
+  const t = document.getElementById("tab-" + id); if (t) t.classList.add("active");
+  const moreIds = ["overview", "guide", "builder", "gem"];
+  const b = document.getElementById("tab-btn-" + (moreIds.includes(id) ? "more" : id)); if (b) b.classList.add("active");
+  document.getElementById("more-dropdown").classList.add("hidden");
+  if (id === "tracker") { renderCalendar(); renderHistory(); loadForm(); }
+  if (id === "builder") edRender();
+  if (id === "gem") buildReport();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function toggleMoreMenu(e) { e.stopPropagation(); document.getElementById("more-dropdown").classList.toggle("hidden"); }
+document.addEventListener("click", e => {
+  const m = document.getElementById("more-dropdown"), b = document.getElementById("tab-btn-more");
+  if (!m.contains(e.target) && !b.contains(e.target)) m.classList.add("hidden");
+});
+
+/* ================= Workouts render ================= */
+function renderDayButtons() {
+  document.getElementById("day-buttons").innerHTML = PLAN.days.map((d, i) =>
+    '<button onclick="switchDay(' + i + ')" class="px-4 py-2.5 rounded-xl font-semibold text-sm transition ' +
+    (i === curDay ? "bg-blue-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200") + '">' +
+    esc(d.label) + ": " + esc(d.name) + "</button>").join("");
+}
+function renderWarmup(d) {
+  document.getElementById("warm-title").textContent = d.warmupTitle || "3-Minute Joint Warm-Up";
+  document.getElementById("warm-focus").textContent = d.warmupFocus ? "Focus: " + d.warmupFocus : "";
+  document.getElementById("warm-grid").innerHTML = (d.warmup || []).map((w, i) =>
+    '<div class="bg-white rounded-2xl border border-blue-100 overflow-hidden shadow-sm flex flex-col">' +
+      '<div class="ph h-40 relative overflow-hidden">' + img(w.img, w.fb, w.title, "w-full h-full object-cover") +
+      '<span class="absolute top-2 left-2 bg-slate-900/80 text-white text-[11px] font-semibold px-2 py-1 rounded-lg">Minute ' + (i + 1) + "</span></div>" +
+      '<div class="p-4 space-y-3 flex-1 flex flex-col">' +
+        '<div class="flex items-start justify-between gap-2"><h4 class="text-sm font-bold text-slate-900">' + esc(w.title) + '</h4>' +
+        '<span class="shrink-0 text-[11px] font-semibold bg-blue-100 text-blue-800 rounded-full px-2 py-0.5">' + esc(w.time || "1 Minute") + "</span></div>" +
+        '<ol class="list-decimal list-inside space-y-1 text-xs text-slate-700">' + (w.steps || []).map(s => "<li>" + esc(s) + "</li>").join("") + "</ol>" +
+        '<div class="mt-auto bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-xs text-emerald-900"><strong class="text-emerald-700">✓ Joint safety:</strong> ' + esc(w.safety) + "</div>" +
+      "</div></div>").join("");
+}
+function exCard(ex, i) {
+  const checks = (ex.checks || []).map(c =>
+    '<div class="flex gap-2 text-xs ' + (c.ok ? "text-emerald-900" : "text-rose-900") + '">' +
+    '<span class="font-bold ' + (c.ok ? "text-emerald-600" : "text-rose-600") + '">' + (c.ok ? "✓" : "✕") + "</span>" +
+    "<span><strong>" + esc(c.title) + ":</strong> " + esc(c.text) + "</span></div>").join("");
+  const rx = ex.rx || {};
+  const row = (l, v, cls) => '<div class="flex justify-between gap-3 pb-2 border-b border-slate-200"><span class="text-slate-500">' + l + '</span><span class="font-bold text-right ' + (cls || "text-slate-800") + '">' + esc(v) + "</span></div>";
+  return '<article class="bg-white border-2 ' + (i === 0 ? "border-blue-500" : "border-slate-200") + ' rounded-3xl p-5 sm:p-6 shadow-md">' +
+    '<div class="flex flex-wrap items-center justify-between gap-2 mb-4"><div>' +
+      '<span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Exercise ' + (i + 1) + "</span>" +
+      '<h3 class="text-xl font-bold text-slate-900">' + esc(ex.title) + "</h3>" +
+      '<p class="text-xs text-slate-500 mt-0.5">' + esc(ex.equipment) + "</p></div>" +
+      '<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">' + esc(ex.badge) + "</span></div>" +
+    '<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">' +
+      '<div class="lg:col-span-2 space-y-4">' +
+        '<div class="ph rounded-2xl overflow-hidden h-56 sm:h-72">' + img(ex.img, ex.fb, ex.title, "w-full h-full object-contain bg-white") + "</div>" +
+        '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-4"><p class="font-bold text-slate-900 text-sm mb-2">Step-by-Step Directions</p>' +
+          '<ol class="list-decimal list-inside space-y-1.5 text-sm text-slate-700">' + (ex.steps || []).map(s => "<li>" + esc(s) + "</li>").join("") + "</ol></div>" +
+        '<div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2"><p class="font-bold text-slate-900 text-sm">Safety Checkpoints</p>' + checks + "</div>" +
+      "</div>" +
+      '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between self-start">' +
+        '<div><h4 class="text-sm font-bold text-slate-900 mb-3 uppercase tracking-wide">Prescription</h4><div class="space-y-3 text-sm">' +
+          row("Sets", rx.sets) + row("Reps", rx.reps) + row("Rest", rx.rest) + row("Tempo", rx.tempo) + row("Load", rx.load, "text-blue-600") +
+        "</div></div>" +
+        '<div class="mt-4 p-3 bg-blue-100/60 rounded-xl text-xs text-blue-900"><strong>Why this protects your joint:</strong> ' + esc(ex.why) + "</div>" +
+      "</div></div></article>";
+}
+function renderDay() {
+  const d = PLAN.days[curDay];
+  renderDayButtons(); renderWarmup(d);
+  document.getElementById("exercise-list").innerHTML = (d.exercises || []).map(exCard).join("") ||
+    '<p class="text-sm text-slate-500">No exercises on this day yet. Add one in More → Exercise Builder.</p>';
+  icons();
+}
+function switchDay(n) { curDay = n; renderDay(); }
+
+/* ================= Meals ================= */
+const MEAL_IMG = { B: U("1517673132405-a56a62b18caf"), L: U("1546069901-ba9599a7e63c"), D: U("1504674900247-0877df9cc836") };
+const WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const WEEK_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const m = (name, items, p, c, f, note) => ({ name, items, p, c, f, note });
+const MEALS = [
+ [ m("Oatmeal, Blueberries & Protein", ["60 g rolled oats cooked in almond milk", "1 scoop gentle whey or plant protein", "1/2 cup blueberries", "1 tsp milled flaxseed"], 36, 72, 13, "Soluble fiber is gentle on digestion."),
+   m("Herbed Chicken & Basmati Rice", ["150 g grilled chicken breast (parsley, thyme)", "150 g cooked basmati rice", "Steamed zucchini & carrots", "1 tsp olive oil + lemon"], 50, 85, 17, "Mild herbs only; no garlic or chili."),
+   m("Turkey Patties & Baked Potato", ["150 g lean turkey breast patties", "1 medium baked potato", "Steamed green beans", "Sea salt & fresh dill"], 48, 80, 21, "Lean protein, low reflux risk.") ],
+ [ m("Egg Scramble, Toast & Banana", ["1 whole egg + 3 egg whites, scrambled in a non-stick pan", "2 slices whole-grain toast", "1 banana"], 34, 68, 15, "Whites keep fat moderate."),
+   m("Baked Cod, Jasmine Rice & Carrots", ["170 g baked cod with lemon & parsley", "150 g jasmine rice", "Steamed carrots and spinach", "1 tsp olive oil"], 48, 90, 15, "White fish is very low in fat."),
+   m("Chicken & Potato Vegetable Soup", ["150 g chicken breast, diced", "2 small potatoes, carrots, celery", "Homemade broth, bay leaf, thyme", "1 slice sourdough"], 50, 78, 22, "Warm, easy to digest, no spice.") ],
+ [ m("Greek Yogurt, Oats & Pear", ["250 g low-fat Greek yogurt", "40 g oats", "1 sliced pear", "1 tbsp honey"], 38, 70, 12, "Low fat, high protein."),
+   m("Turkey & Rice Bowl", ["150 g roast turkey breast", "150 g cooked white rice", "Cucumber and lettuce", "1 tsp olive oil + lemon"], 50, 82, 18, "Cool, light, no irritants."),
+   m("Baked Hake & Sweet Potato Mash", ["170 g baked hake", "1 medium sweet potato, mashed", "Green beans", "Fresh dill"], 46, 85, 20, "Soft textures, minimal fat.") ],
+ [ m("Banana-Oat Pancakes", ["2 ripe bananas + 60 g oats + 2 egg whites, blended", "Cooked in a non-stick pan", "1 scoop protein, 1/2 cup berries"], 35, 75, 12, "No butter needed."),
+   m("Chicken, Quinoa & Roasted Veg", ["150 g chicken breast", "120 g cooked quinoa", "Roasted carrots & zucchini", "1 tsp olive oil"], 52, 80, 16, "Mild and fibre-rich."),
+   m("Turkey Meatballs & Zucchini Pasta", ["150 g lean turkey meatballs (oats, parsley, no garlic)", "80 g dry pasta", "Zucchini ribbons", "1 tsp olive oil, basil"], 48, 84, 22, "Skip tomato sauce if it triggers reflux.") ],
+ [ m("Cottage Cheese, Berries & Rice Cakes", ["250 g low-fat cottage cheese", "3 rice cakes", "1 cup mixed berries", "1 tsp honey"], 36, 70, 14, "Quick, low-fat protein."),
+   m("Tuna Potato Salad", ["1 can tuna in water, drained", "250 g boiled potatoes", "Cucumber, parsley, lemon", "1 tsp olive oil"], 48, 88, 16, "No raw garlic or onion."),
+   m("Baked Chicken, Rice & Spinach", ["150 g chicken breast with thyme", "150 g basmati rice", "Steamed spinach", "1 tsp olive oil"], 50, 80, 20, "Light dinner.") ],
+ [ m("Spinach Omelette & Toast", ["1 whole egg + 3 egg whites", "Handful of spinach", "2 slices whole-grain toast", "1 apple"], 37, 72, 13, "Cook in a non-stick pan."),
+   m("Turkey Sandwich & Fruit", ["2 slices sourdough", "120 g turkey breast slices", "Lettuce, cucumber", "1 mild mustard tsp, 1 orange"], 50, 86, 17, "Check deli meat is low-fat."),
+   m("Baked Hake, Roast Potatoes & Beans", ["170 g baked hake with lemon", "250 g roasted potatoes (1 tsp oil)", "Steamed green beans"], 47, 82, 22, "Gentle on the biliary system.") ],
+ [ m("Oat Bowl, Banana & Almond Butter", ["60 g oats in water or almond milk", "1 banana", "1 scoop protein", "2 tsp almond butter"], 34, 74, 14, "Almond butter kept to 2 tsp."),
+   m("Roast Chicken, Root Veg & Rice", ["150 g roast chicken breast, skin off", "Roasted carrots & parsnip", "150 g rice", "Fresh rosemary"], 46, 90, 16, "Skinless keeps fat low."),
+   m("Turkey & Vegetable Stew", ["150 g turkey breast cubes", "Potato, carrot, celery, peas", "Rice or small bread roll", "Parsley, bay leaf"], 50, 78, 21, "Slow-cooked, soft, no spice.") ]
+];
+const kc = x => 4 * x.p + 4 * x.c + 9 * x.f;
+let mealDay = (new Date().getDay() + 6) % 7;
+
+function renderMealDays() {
+  document.getElementById("meal-days").innerHTML = WEEK.map((w, i) =>
+    '<button onclick="setMealDay(' + i + ')" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition ' +
+    (i === mealDay ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200") + '">' + w + "</button>").join("");
+}
+function setMealDay(i) { mealDay = i; renderMeals(); }
+function renderMeals() {
+  renderMealDays();
+  const checks = store.get("tp_meals", {});
+  const labels = ["Breakfast", "Lunch", "Dinner"], keys = ["B", "L", "D"];
+  const day = MEALS[mealDay];
+  let total = 0, eaten = 0, tp = 0, tc = 0, tf = 0;
+  day.forEach((x, i) => { total += kc(x); tp += x.p; tc += x.c; tf += x.f; if (checks[WEEK[mealDay] + keys[i]]) eaten += kc(x); });
+  document.getElementById("meal-summary").innerHTML =
+    '<div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-sm font-bold text-slate-900">' + WEEK_FULL[mealDay] + ' totals</p>' +
+    '<p class="text-xs text-slate-500">' + total + " kcal • Protein " + tp + " g • Carbs " + tc + " g • Fat " + tf + " g</p></div>" +
+    '<p class="text-sm font-semibold text-emerald-700">Eaten so far: ' + eaten + " / " + total + " kcal</p></div>" +
+    '<div class="w-full h-2.5 bg-slate-200 rounded-full mt-3 overflow-hidden"><div class="h-full bg-emerald-500" style="width:' + Math.round(100 * eaten / total) + '%"></div></div>';
+  document.getElementById("meal-cards").innerHTML = day.map((x, i) => {
+    const key = WEEK[mealDay] + keys[i], on = !!checks[key];
+    return '<div class="bg-white border ' + (on ? "border-emerald-400" : "border-slate-200") + ' rounded-3xl overflow-hidden shadow-sm flex flex-col">' +
+      '<div class="ph h-40 overflow-hidden">' + img(MEAL_IMG[keys[i]], "", x.name, "w-full h-full object-cover") + "</div>" +
+      '<div class="p-5 space-y-2 flex-1">' +
+        '<div class="flex items-start justify-between gap-3"><div><span class="text-xs font-bold text-emerald-600 uppercase">' + labels[i] + " (~" + kc(x) + " kcal)</span>" +
+        '<h3 class="text-lg font-bold text-slate-900">' + esc(x.name) + "</h3></div>" +
+        '<label class="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl ' + (on ? "bg-emerald-100" : "bg-slate-100") + ' cursor-pointer" title="Mark as eaten">' +
+        '<input type="checkbox" class="w-6 h-6 accent-emerald-600" ' + (on ? "checked" : "") + ' onchange="toggleMeal(\'' + key + "', this.checked)\"></label></div>" +
+        '<ul class="text-xs text-slate-600 space-y-1">' + x.items.map(t => "<li>• " + esc(t) + "</li>").join("") + "</ul>" +
+        '<div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-semibold"><span class="bg-blue-50 text-blue-800 rounded-full px-2 py-0.5">P ' + x.p + ' g</span>' +
+        '<span class="bg-amber-50 text-amber-800 rounded-full px-2 py-0.5">C ' + x.c + ' g</span><span class="bg-rose-50 text-rose-800 rounded-full px-2 py-0.5">F ' + x.f + " g</span></div>" +
+      "</div>" +
+      '<div class="p-5 pt-0"><div class="bg-emerald-50 p-2.5 rounded-xl text-xs text-emerald-800 font-medium">' + esc(x.note) + "</div></div></div>";
+  }).join("");
+}
+function toggleMeal(key, v) { const c = store.get("tp_meals", {}); if (v) c[key] = true; else delete c[key]; store.set("tp_meals", c); renderMeals(); }
+function resetMeals() { if (confirm("Clear all meal check-offs for the week?")) { store.del("tp_meals"); renderMeals(); } }
+
+/* ================= Tracker ================= */
+let selDate = todayStr();
+let calY = new Date().getFullYear(), calM = new Date().getMonth();
+const WALK = ["Completed", "Shortened", "Rest"];
+const ROUT = ["Completed Day Routine", "Stretching", "Rest"];
+const PAIN = [["knee", "Knees"], ["back", "Lower back"], ["shoulder", "Shoulders"]];
+let formState = {};
+
+function getLog() { return store.get("tp_log", {}); }
+function stepKcal(l) { return Math.round((+l.steps || 0) * 0.04); }
+function totalKcal(l) { return stepKcal(l) + (Math.round(+l.apple) || 0); }
+
+function renderSeg(id, opts, field) {
+  document.getElementById(id).innerHTML = opts.map(o =>
+    '<button type="button" data-v="' + o + '" onclick="setSeg(\'' + field + "','" + o + '\')" class="seg border border-slate-300 rounded-xl px-3 py-2.5 text-xs font-semibold ' + (formState[field] === o ? "on" : "bg-white text-slate-700") + '">' + o + "</button>").join("");
+}
+// Toggle the active look in place (no DOM rebuild, so no flicker).
+function paintSeg(id, field) {
+  document.getElementById(id).querySelectorAll(".seg").forEach(b => {
+    const on = b.dataset.v === formState[field];
+    b.classList.toggle("on", on); b.classList.toggle("bg-white", !on); b.classList.toggle("text-slate-700", !on);
+  });
+}
+function setSeg(field, v) {
+  formState[field] = (formState[field] === v ? "" : v);
+  paintSeg(field === "walk" ? "seg-walk" : "seg-routine", field);
+  saveForm();
+}
+
+function renderPain() {
+  document.getElementById("pain-sliders").innerHTML = PAIN.map(p =>
+    '<div><div class="flex justify-between text-sm font-semibold text-slate-800 mb-1"><span>' + p[1] + '</span><span id="pv-' + p[0] + '" class="px-2.5 py-0.5 bg-blue-600 text-white rounded-lg text-xs font-bold">' + (formState[p[0]] || 1) + ' / 10</span></div>' +
+    '<input type="range" min="1" max="10" value="' + (formState[p[0]] || 1) + '" id="pain-' + p[0] + '" class="w-full accent-blue-600" oninput="document.getElementById(\'pv-' + p[0] + '\').textContent=this.value+\' / 10\'"></div>').join("");
+}
+
+function loadForm() {
+  const l = getLog()[selDate] || {};
+  formState = { walk: l.walk || "", routine: l.routine || "", knee: l.knee || 1, back: l.back || 1, shoulder: l.shoulder || 1 };
+  document.getElementById("date-pick").value = selDate;
+  document.getElementById("log-date-label").textContent = selDate;
+  document.getElementById("f-weight").value = l.weight || "";
+  document.getElementById("f-steps").value = l.steps || "";
+  document.getElementById("f-apple").value = l.apple || "";
+  renderSeg("seg-walk", WALK, "walk"); renderSeg("seg-routine", ROUT, "routine"); renderPain();
+  updateSummary();
+}
+function readForm() {
+  PAIN.forEach(p => { const el = document.getElementById("pain-" + p[0]); if (el) formState[p[0]] = +el.value; });
+  return { walk: formState.walk, routine: formState.routine, knee: formState.knee, back: formState.back, shoulder: formState.shoulder,
+    weight: parseNum("f-weight", 30, 300, 1), steps: parseNum("f-steps", 0, 100000, 0), apple: parseNum("f-apple", 0, 10000, 0) };
+}
+// Numeric sanitising: blank/invalid -> "", otherwise clamp to a sensible range and round.
+function parseNum(id, min, max, decimals) {
+  const v = parseFloat(document.getElementById(id).value);
+  if (isNaN(v)) return "";
+  const c = Math.min(Math.max(v, min), max), f = Math.pow(10, decimals);
+  return Math.round(c * f) / f;
+}
+// On blur/change, show the user the value that was actually saved.
+function normalizeInputs() {
+  [["f-weight", 30, 300, 1], ["f-steps", 0, 100000, 0], ["f-apple", 0, 10000, 0]].forEach(a => {
+    const el = document.getElementById(a[0]), n = parseNum(a[0], a[1], a[2], a[3]);
+    if (String(n) !== el.value) el.value = n;
+  });
+}
+function updateSummary() {
+  const l = readForm();
+  document.getElementById("sum-steps").textContent = stepKcal(l);
+  document.getElementById("sum-apple").textContent = Math.round(+l.apple) || 0;
+  document.getElementById("sum-total").textContent = totalKcal(l);
+}
+let saveTimer;
+function saveForm() {
+  updateSummary();
+  const log = getLog(); log[selDate] = readForm(); store.set("tp_log", log);
+  const msg = document.getElementById("save-msg"); msg.style.opacity = 1;
+  clearTimeout(saveTimer); saveTimer = setTimeout(() => { msg.style.opacity = 0; }, 1500);
+  renderCalendar(); renderHistory();
+}
+function pickDate(v) { if (!v) return; selDate = v; const d = new Date(v + "T00:00:00"); calY = d.getFullYear(); calM = d.getMonth(); loadForm(); renderCalendar(); }
+function calMove(n) { calM += n; if (calM < 0) { calM = 11; calY--; } if (calM > 11) { calM = 0; calY++; } renderCalendar(); }
+function renderCalendar() {
+  const log = getLog(), first = new Date(calY, calM, 1), days = new Date(calY, calM + 1, 0).getDate();
+  const offset = (first.getDay() + 6) % 7, today = todayStr();
+  document.getElementById("cal-title").textContent = first.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  let h = "";
+  for (let i = 0; i < offset; i++) h += "<span></span>";
+  for (let d = 1; d <= days; d++) {
+    const ds = calY + "-" + String(calM + 1).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+    const sel = ds === selDate, has = !!log[ds], isT = ds === today;
+    h += '<button onclick="pickDate(\'' + ds + '\')" class="cal-cell rounded-xl flex flex-col items-center justify-center ' + (sel ? "bg-blue-600 text-white" : "bg-slate-50 hover:bg-slate-100") + (isT && !sel ? " ring-2 ring-blue-300" : "") + '">' +
+      '<span class="text-sm font-semibold">' + d + '</span><span class="w-1.5 h-1.5 rounded-full ' + (has ? "bg-emerald-500" : "bg-transparent") + '"></span></button>';
+  }
+  document.getElementById("cal-grid").innerHTML = h;
+}
+function renderHistory() {
+  const log = getLog(), dates = Object.keys(log).sort();
+  document.getElementById("hist-body").innerHTML = dates.length ? dates.map(d => {
+    const l = log[d];
+    return '<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" onclick="pickDate(\'' + d + '\')"><td class="py-2.5 pr-3 font-semibold">' + d + "</td>" +
+      "<td class=\"pr-3\">" + (l.weight ? esc(l.weight) + " kg" : "–") + "</td><td class=\"pr-3\">" + (l.knee || 1) + " / " + (l.back || 1) + " / " + (l.shoulder || 1) + "</td>" +
+      "<td class=\"pr-3\">" + esc([l.walk && "Walk: " + l.walk, l.routine && "Routine: " + l.routine].filter(Boolean).join(" • ") || "–") + "</td><td>" + totalKcal(l) + " kcal</td></tr>";
+  }).join("") : '<tr><td colspan="5" class="py-4 text-slate-400 text-sm">No entries yet. Fill in a day above and it appears here.</td></tr>';
+}
+function clearData() { if (confirm("Delete ALL tracker history from this browser? This cannot be undone.")) { store.del("tp_log"); loadForm(); renderCalendar(); renderHistory(); } }
+function rowsForExport() {
+  const log = getLog();
+  return Object.keys(log).sort().map(d => { const l = log[d]; return [d, l.weight || "", l.knee || 1, l.back || 1, l.shoulder || 1, l.walk || "", l.routine || "", l.steps || "", l.apple || "", totalKcal(l)]; });
+}
+function exportCSV() {
+  const head = ["Date", "Weight", "Knee", "Back", "Shoulder", "Walk", "Routine", "Steps", "Apple kcal", "Total kcal"];
+  const csv = [head].concat(rowsForExport()).map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(",")).join("\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" })); a.download = "toncho-tracker.csv"; a.click();
+}
+
+/* ================= Gem coach + Sheets ================= */
+function copyText(text, btn) {
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = "Copied ✓"; setTimeout(() => btn.textContent = o, 1600); } };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+  else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done) { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); done(); } catch (e) {} t.remove(); }
+function copyEl(id, btn) { copyText(document.getElementById(id).value, btn); }
+const SCHEMA_TEXT = 'Return ONLY valid JSON for one exercise in this exact shape:\n{\n  "id": "short-unique-id",\n  "title": "Exercise name",\n  "badge": "Muscle group • Joint focus",\n  "equipment": "Equipment • starting weight",\n  "img": "https://direct-image-url.jpg",\n  "steps": ["step 1", "step 2", "step 3", "step 4", "step 5"],\n  "checks": [ {"ok": true, "title": "...", "text": "..."}, {"ok": false, "title": "Do not ...", "text": "..."} ],\n  "rx": {"sets": "3", "reps": "10", "rest": "60 seconds", "tempo": "2s up • 2s down", "load": "Bodyweight"},\n  "why": "Why this protects the joints."\n}';
+function buildPrompt() {
+  document.getElementById("ed-prompt").value = "You are my joint-safe strength coach. I am a 54-year-old man, 180 cm, 91 kg, with knee, lower-back, neck and shoulder sensitivities. I train at home with a bench, dumbbells (up to 8 kg), light resistance bands and a yoga mat. No spinal flexion under load, no overhead loading.\n\nCreate ONE new exercise: [describe what you want, e.g. a knee-friendly replacement for step-ups].\n\n" + SCHEMA_TEXT + "\n\nNo text outside the JSON.";
+}
+function buildReport() {
+  const log = getLog(), dates = Object.keys(log).sort().slice(-14);
+  const data = dates.map(d => ({ date: d, weight_kg: log[d].weight || null, pain_knee: log[d].knee || 1, pain_back: log[d].back || 1, pain_shoulder: log[d].shoulder || 1, dog_walk: log[d].walk || "", routine: log[d].routine || "", steps: +log[d].steps || 0, apple_active_kcal: +log[d].apple || 0, total_active_kcal: totalKcal(log[d]) }));
+  const names = PLAN.days.map(d => d.label + " (" + d.name + "): " + d.exercises.map(e => e.title).join(", ")).join("\n");
+  document.getElementById("gem-report").value = "Please review my last 14 days of tracking and adjust my plan.\n\nCurrent plan:\n" + names + "\n\nTracker data (JSON):\n" + JSON.stringify(data, null, 1) + "\n\nTell me what to change. For any new or modified exercise, reply with JSON in this format so I can paste it into my portal:\n" + SCHEMA_TEXT;
+}
+function copyReport(btn) { buildReport(); copyText(document.getElementById("gem-report").value, btn); }
+function saveSheetUrl() { store.set("tp_sheet", document.getElementById("sheet-url").value.trim()); sheetMsg("URL saved.", true); }
+function sheetMsg(t, ok) { const e = document.getElementById("sheet-msg"); e.textContent = t; e.className = "text-xs font-semibold min-h-[1rem] " + (ok ? "text-emerald-600" : "text-rose-600"); }
+function sendSheet() {
+  const url = store.get("tp_sheet", ""); if (!url) { sheetMsg("Save your web-app URL first.", false); return; }
+  fetch(url, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(rowsForExport()) })
+    .then(() => sheetMsg("Sent. Check your Sheet (the browser cannot confirm delivery).", true)).catch(() => sheetMsg("Could not reach the script URL.", false));
+}
+
+/* ================= Exercise builder ================= */
+let edMode = "exercise";
+function edMsg(t, ok) { const e = document.getElementById("ed-msg"); e.textContent = t; e.className = "text-xs font-semibold min-h-[1rem] " + (ok ? "text-emerald-600" : "text-rose-600"); }
+function edRender() {
+  const sel = document.getElementById("ed-day");
+  if (!sel.options.length || sel.options.length !== PLAN.days.length) sel.innerHTML = PLAN.days.map((d, i) => '<option value="' + i + '">' + esc(d.label + ": " + d.name) + "</option>").join("");
+  const di = +sel.value || 0, d = PLAN.days[di];
+  document.getElementById("ed-list").innerHTML = d.exercises.map((e, i) =>
+    '<div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2.5"><span class="flex-1 text-sm font-semibold text-slate-800 truncate">' + (i + 1) + ". " + esc(e.title) + "</span>" +
+    '<button onclick="edEdit(' + i + ')" class="px-2.5 py-2 rounded-lg bg-white border border-slate-200 text-xs font-semibold hover:bg-slate-100">Edit</button>' +
+    '<button onclick="edMove(' + i + ',-1)" class="px-2.5 py-2 rounded-lg bg-white border border-slate-200 text-xs hover:bg-slate-100" aria-label="Move up">↑</button>' +
+    '<button onclick="edDelete(' + i + ')" class="px-2.5 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold hover:bg-rose-100">Delete</button></div>').join("") || '<p class="text-xs text-slate-400">No exercises on this day.</p>';
+  buildPrompt();
+}
+function edDi() { return +document.getElementById("ed-day").value || 0; }
+function edEdit(i) { edMode = "exercise"; document.getElementById("ed-json").value = JSON.stringify(PLAN.days[edDi()].exercises[i], null, 2); edMsg("Editing exercise. Change the JSON, then press Save as exercise.", true); }
+function edNew() { document.getElementById("ed-json").value = JSON.stringify({ id: "new-" + Date.now().toString(36), title: "New exercise", badge: "Muscle group • Joint focus", equipment: "Equipment • weight", img: "", steps: ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"], checks: [{ ok: true, title: "Good form", text: "..." }, { ok: false, title: "Avoid", text: "..." }], rx: { sets: "3", reps: "10", rest: "60 seconds", tempo: "2s up • 2s down", load: "Bodyweight" }, why: "..." }, null, 2); edMsg("Template loaded. Fill it in, then Save as exercise.", true); }
+function edLoadWarm() { const d = PLAN.days[edDi()]; document.getElementById("ed-json").value = JSON.stringify({ warmupTitle: d.warmupTitle, warmupFocus: d.warmupFocus, warmup: d.warmup }, null, 2); edMsg("Editing warm-up. Press Save as warm-up when done.", true); }
+function edParse() { try { return JSON.parse(document.getElementById("ed-json").value); } catch (e) { edMsg("That is not valid JSON: " + e.message, false); return null; } }
+function edSaveExercise() {
+  const o = edParse(); if (!o) return;
+  if (!o.title || !Array.isArray(o.steps) || !o.steps.length) { edMsg("An exercise needs a title and a steps list.", false); return; }
+  o.id = o.id || "ex-" + Date.now().toString(36); o.badge = o.badge || ""; o.equipment = o.equipment || ""; o.checks = o.checks || []; o.rx = o.rx || {}; o.why = o.why || ""; o.img = o.img || ""; o.fb = o.fb || IMG.fit;
+  const d = PLAN.days[edDi()], idx = d.exercises.findIndex(e => e.id === o.id);
+  if (idx >= 0) d.exercises[idx] = o; else d.exercises.push(o);
+  savePlan(); edRender(); renderDay(); edMsg(idx >= 0 ? "Exercise updated." : "Exercise added to " + d.label + ".", true);
+}
+function edSaveWarm() {
+  const o = edParse(); if (!o) return;
+  if (!Array.isArray(o.warmup)) { edMsg("Warm-up JSON needs a \"warmup\" list.", false); return; }
+  const d = PLAN.days[edDi()]; d.warmup = o.warmup; if (o.warmupTitle) d.warmupTitle = o.warmupTitle; if (o.warmupFocus) d.warmupFocus = o.warmupFocus;
+  savePlan(); renderDay(); edMsg("Warm-up updated.", true);
+}
+function edDelete(i) { if (!confirm("Delete this exercise?")) return; PLAN.days[edDi()].exercises.splice(i, 1); savePlan(); edRender(); renderDay(); }
+function edMove(i, dir) { const a = PLAN.days[edDi()].exercises, j = i + dir; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; savePlan(); edRender(); renderDay(); }
+function edResetAll() { if (confirm("Reset all workouts and warm-ups to the original plan?")) { store.del("tp_plan"); PLAN = JSON.parse(JSON.stringify(DEFAULT_PLAN)); edRender(); renderDay(); edMsg("Plan reset.", true); } }
+
+/* ================= Init ================= */
+document.getElementById("sheet-url").value = store.get("tp_sheet", "");
+renderDay(); renderMeals(); loadForm(); renderCalendar(); renderHistory(); buildPrompt(); icons();
+</script>
+</body>
+</html>
