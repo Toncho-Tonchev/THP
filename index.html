@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joint-Safe Fitness & Meal Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .day-content { display: none; }
+    .day-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+          JF
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">Joint-Safe Coaching Portal</h1>
+          <p class="text-xs text-slate-500">Low-Impact Corrective Strength &amp; Nutrition</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation -->
+      <nav class="flex items-center space-x-1 sm:space-x-2 text-sm font-medium">
+        <button onclick="switchTab('workouts')" id="tab-btn-workouts" class="nav-tab px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold transition">
+          4-Day Workouts
+        </button>
+        <button onclick="switchTab('meals')" id="tab-btn-meals" class="nav-tab px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition">
+          Meal Plan
+        </button>
+        <button onclick="switchTab('tracker')" id="tab-btn-tracker" class="nav-tab px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition">
+          Daily Tracker
+        </button>
+
+        <!-- More Dropdown -->
+        <div class="relative">
+          <button onclick="toggleMoreMenu()" id="more-menu-btn" class="nav-tab px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition flex items-center gap-1">
+            <span>More</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50">
+            <button onclick="switchTab('overview'); toggleMoreMenu();" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
+              Client Overview
+            </button>
+            <button onclick="switchTab('guide'); toggleMoreMenu();" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
+              Plain-English Guide
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- TAB 1: 4-DAY WORKOUTS -->
+    <section id="tab-workouts" class="tab-content active space-y-6">
+      <!-- Routine Header -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">4-Day Corrective Strength Routine</h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Schedule: 30-min morning brisk walk + 20-min corrective session (4 days/week).
+          </p>
+        </div>
+        <!-- Day Selector Buttons -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="switchDay(1)" id="day-btn-1" class="day-tab px-3 py-1.5 rounded-lg bg-blue-600 text-white font-medium text-sm transition">Day 1</button>
+          <button onclick="switchDay(2)" id="day-btn-2" class="day-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-medium text-sm hover:bg-slate-200 transition">Day 2</button>
+          <button onclick="switchDay(3)" id="day-btn-3" class="day-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-medium text-sm hover:bg-slate-200 transition">Day 3</button>
+          <button onclick="switchDay(4)" id="day-btn-4" class="day-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-medium text-sm hover:bg-slate-200 transition">Day 4</button>
+        </div>
+      </div>
+
+      <!-- 3-Minute Warm-Up Box -->
+      <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-900">
+        <h3 class="font-bold mb-1">3-Minute Joint Warm-Up (Perform Before Every Session):</h3>
+        <p>1. <strong>Supine Belly Breathing</strong> (1 min): Lie on back, breathe deeply into abdomen to relax back muscles.</p>
+        <p>2. <strong>Bodyweight Glute Bridges</strong> (1 min): 10 gentle reps to activate hips without weight.</p>
+        <p>3. <strong>Cat-Cow on Floor</strong> (1 min): Slow spinal flexion and extension to lubricate vertebrae.</p>
+      </div>
+
+      <!-- DAY 1 CONTENT -->
+      <div id="day-content-1" class="day-content active space-y-6">
+        <!-- Featured Infographic Banner for Day 1 Exercise 1 -->
+        <div class="bg-white border-2 border-blue-500 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-slate-900">Exercise 1: Bench Hip Thrust (Glute Bridge) — Form Check</h3>
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">Joint-Safety Priority</span>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div>
+              <p class="font-bold text-blue-900 mb-2">Step-by-Step Directions:</p>
+              <ol class="list-decimal list-inside space-y-1.5">
+                <li>Sit on mat with upper back/shoulder blades against bench edge.</li>
+                <li>Feet flat, hip-width apart, knees bent.</li>
+                <li>Drive upward firmly through your <strong>heels</strong> until torso and thighs form a flat tabletop.</li>
+                <li>Squeeze glutes tight at the top for <strong>2 full seconds</strong>.</li>
+                <li>Lower hips slowly until almost touching mat, then repeat.</li>
+              </ol>
+            </div>
+            <div>
+              <p class="font-bold text-blue-900 mb-2">Arm &amp; Neck Safety Checkpoints:</p>
+              <ul class="space-y-1.5">
+                <li class="flex items-start gap-2">
+                  <span class="text-green-600 font-bold">✓</span>
+                  <span><strong>Upper arms on bench:</strong> Rest triceps/elbows flat on top of the bench pad to support torso.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-green-600 font-bold">✓</span>
+                  <span><strong>Alternative:</strong> Cross arms loosely over chest.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-red-600 font-bold">✕</span>
+                  <span><strong>Do not place hands on floor:</strong> Keeping hands on the floor twists the wrists and pinches neck/trapezius muscles.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-green-600 font-bold">✓</span>
+                  <span><strong>Gaze:</strong> Look forward toward your knees, not straight up at ceiling.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-2 italic">Prescription: 3 sets of 10–12 reps. Rest 60 seconds between sets.</p>
+        </div>
+
+        <!-- Remaining Exercises Day 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">Exercise 2: Chest-Supported Dumbbell Row</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 10 reps | Starting Weight: 4–6 kg per hand</p>
+            <p class="text-sm text-slate-600">
+              Lie chest-down on an incline bench. Pull dumbbells upward toward hips, keeping elbows close to your sides. Squeeze back muscles without straining the neck.
+            </p>
+            <div class="bg-slate-50 p-2.5 rounded-lg text-xs text-slate-700">
+              <strong>Joint Safeguard:</strong> Bench supports torso weight, eliminating lower-back strain entirely.
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">Exercise 3: Dead Bug (Core Stability)</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 8 reps per side | Bodyweight</p>
+            <p class="text-sm text-slate-600">
+              Lie flat on back with arms pointing to ceiling and knees at 90°. Slowly extend opposite arm and leg while pressing lower back flat into the mat.
+            </p>
+            <div class="bg-slate-50 p-2.5 rounded-lg text-xs text-slate-700">
+              <strong>Joint Safeguard:</strong> Zero lumbar twisting or crunching. Trains deep abdominal stabilizers.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 CONTENT -->
+      <div id="day-content-2" class="day-content space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Day 2: Upper Body Stability &amp; Rotator Cuff</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">1. Floor Dumbbell Press</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 10 reps | 5–8 kg</p>
+            <p class="text-sm text-slate-600">Lie flat on mat. Press dumbbells upward. Lower elbows until triceps tap the floor, then press up.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Floor stops shoulder hyperextension.</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">2. Band Pull-Apart</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 15 reps | Light Band</p>
+            <p class="text-sm text-slate-600">Hold band straight ahead at chest level. Pull band apart until it touches chest, squeezing shoulder blades.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Relieves neck tightness by activating upper back.</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">3. Suitcase Carry / March</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 45 sec per side | 6–8 kg</p>
+            <p class="text-sm text-slate-600">Hold one dumbbell at side like a suitcase. Walk tall with shoulders level, bracing core.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Trains core anti-lateral flexion without spine strain.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 3 CONTENT -->
+      <div id="day-content-3" class="day-content space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Day 3: Knee Alignment &amp; Posterior Chain</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">1. Low Box Step-Ups</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 8 reps per leg | Bodyweight</p>
+            <p class="text-sm text-slate-600">Step onto a low bench or step. Drive through whole foot to stand tall. Lower down under control.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Controlled single-leg knee tracking; no popping.</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">2. Band Hamstring Curls</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 12 reps | Light Band</p>
+            <p class="text-sm text-slate-600">Loop band around ankle and bench leg. Lie on stomach or stand, curling heel toward glute.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Strengthens tendon behind knee directly.</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">3. Bird-Dog</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 8 reps per side | Bodyweight</p>
+            <p class="text-sm text-slate-600">On all fours, extend right arm and left leg straight out. Hold 2 seconds, switch sides.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> True spinal stability without rotational stress.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 CONTENT -->
+      <div id="day-content-4" class="day-content space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Day 4: Postural Strength &amp; Core Integration</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">1. Neutral-Grip Dumbbell Rows</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 10 reps | 5–7 kg</p>
+            <p class="text-sm text-slate-600">Bench-supported row with palms facing inward. Keeps shoulders completely free of impingement.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Protects rotator cuff tendons.</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">2. Isometric Glute Bridge Hold</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 25–30 sec hold | Bodyweight</p>
+            <p class="text-sm text-slate-600">Drive hips upward and hold at top position. Keeps continuous tension on hip extensors.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Joint-friendly tendon conditioning.</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <h4 class="font-bold text-slate-900">3. Band External Rotations</h4>
+            <p class="text-xs text-blue-600 font-medium">3 sets × 12 reps per side | Light Band</p>
+            <p class="text-sm text-slate-600">Tuck a towel roll under elbow. Rotate forearm outward away from abdomen.</p>
+            <div class="bg-slate-50 p-2 rounded-lg text-xs text-slate-700"><strong>Safeguard:</strong> Fixes rounded shoulder posture and neck strain.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MEAL PLAN -->
+    <section id="tab-meals" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Tailored Weight Loss Meal Plan</h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Target: <strong>~1,950 kcal/day</strong> (Safe ~0.5 kg/week loss from 91 kg to 85 kg).
+        </p>
+        <div class="mt-3 flex flex-wrap gap-2 text-xs">
+          <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-semibold">Gallbladder Safe</span>
+          <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">Zero Raw Garlic</span>
+          <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full font-semibold">Zero Spicy Seasonings</span>
+          <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">Moderate Healthy Fats</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Breakfast -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-blue-600 uppercase">Meal 1: Breakfast</span>
+          <h3 class="font-bold text-slate-900">Digestive Oatmeal &amp; Berries</h3>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• 60g rolled oats cooked in water or almond milk</li>
+            <li>• 1 scoop gentle whey or plant protein powder</li>
+            <li>• 1/2 cup blueberries</li>
+            <li>• 1 tsp flaxseed meal</li>
+          </ul>
+          <p class="text-xs text-slate-500 pt-2 border-t">~420 kcal | 28g Protein | Easy on gallbladder</p>
+        </div>
+
+        <!-- Lunch -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-blue-600 uppercase">Meal 2: Lunch</span>
+          <h3 class="font-bold text-slate-900">Herbed Chicken &amp; Rice Bowl</h3>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• 150g grilled chicken breast (herbs, parsley, thyme)</li>
+            <li>• 150g cooked jasmine or basmati rice</li>
+            <li>• Steamed zucchini and carrots with 1 tsp olive oil</li>
+            <li>• Fresh lemon wedge</li>
+          </ul>
+          <p class="text-xs text-slate-500 pt-2 border-t">~540 kcal | 42g Protein | Mild &amp; soothing</p>
+        </div>
+
+        <!-- Dinner -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-blue-600 uppercase">Meal 3: Dinner</span>
+          <h3 class="font-bold text-slate-900">Lean Turkey &amp; Baked Potato</h3>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• 150g 93% lean ground turkey breast</li>
+            <li>• 1 medium baked potato or sweet potato</li>
+            <li>• Steamed green beans or spinach</li>
+            <li>• Mild dressing (olive oil + lemon salt)</li>
+          </ul>
+          <p class="text-xs text-slate-500 pt-2 border-t">~520 kcal | 38g Protein | Zero gallbladder spasm</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DAILY TRACKER -->
+    <section id="tab-tracker" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Daily Accountability Check-In</h2>
+        <p class="text-sm text-slate-600 mt-1">Track your pain levels, walking routine, and meals daily.</p>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm max-w-xl mx-auto space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Today's Joint Pain Rating (1–10):</label>
+          <div class="flex items-center gap-3">
+            <input type="range" id="pain-slider" min="1" max="10" value="2" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="document.getElementById('pain-val').innerText = this.value">
+            <span id="pain-val" class="font-bold text-blue-600 text-lg w-6 text-center">2</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">1 = Zero pain, 10 = Severe pain requiring rest.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Morning 30-Min Dog Walk:</label>
+          <select id="walk-check" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+            <option>Completed (30 min)</option>
+            <option>Shortened (15–20 min)</option>
+            <option>Rest / Skipped</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Corrective 20-Min Workout:</label>
+          <select id="workout-check" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+            <option>Completed Day Routine</option>
+            <option>Active Recovery (Stretching)</option>
+            <option>Rest Day</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Current Weight (kg):</label>
+          <input type="number" step="0.1" placeholder="e.g. 90.8" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+        </div>
+
+        <button onclick="saveLog()" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+          Log Today's Entry
+        </button>
+        <p id="save-msg" class="text-xs text-center text-emerald-600 font-medium hidden">✓ Entry recorded successfully!</p>
+      </div>
+    </section>
+
+    <!-- TAB 4: CLIENT OVERVIEW (UNDER MORE) -->
+    <section id="tab-overview" class="tab-content space-y-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Client Profile &amp; Joint Baseline</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 text-sm">
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Age / Sex</p>
+            <p class="font-bold text-slate-900">54 yrs • Male</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Height</p>
+            <p class="font-bold text-slate-900">180 cm</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Current Weight</p>
+            <p class="font-bold text-slate-900">91 kg</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Target Weight</p>
+            <p class="font-bold text-emerald-600">85 kg (-6 kg)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: PLAIN ENGLISH GUIDE (UNDER MORE) -->
+    <section id="tab-guide" class="tab-content space-y-4">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+        <h2 class="text-xl font-bold text-slate-900">Plain-English Exercise Dictionary</h2>
+        <div class="space-y-2 text-sm text-slate-700">
+          <p>• <strong>Sets &amp; Reps:</strong> 3 sets of 10 reps means you perform the movement 10 times, rest 1 minute, and repeat that sequence 3 times total.</p>
+          <p>• <strong>Heel Drive:</strong> Pushing exclusively through your heels prevents knee shear and protects against knee popping sounds.</p>
+          <p>• <strong>Neutral Spine:</strong> Keeping your natural back curve straight without tucking or hyperextending.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el => {
+        el.classList.remove('bg-blue-50', 'text-blue-700', 'font-semibold');
+        el.classList.add('text-slate-600');
+      });
+
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+
+      const btn = document.getElementById('tab-btn-' + tabId);
+      if (btn) {
+        btn.classList.add('bg-blue-50', 'text-blue-700', 'font-semibold');
+        btn.classList.remove('text-slate-600');
+      }
+    }
+
+    function switchDay(dayNum) {
+      document.querySelectorAll('.day-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.day-tab').forEach(el => {
+        el.classList.remove('bg-blue-600', 'text-white');
+        el.classList.add('bg-slate-100', 'text-slate-600');
+      });
+
+      const dayTarget = document.getElementById('day-content-' + dayNum);
+      if (dayTarget) dayTarget.classList.add('active');
+
+      const dayBtn = document.getElementById('day-btn-' + dayNum);
+      if (dayBtn) {
+        dayBtn.classList.add('bg-blue-600', 'text-white');
+        dayBtn.classList.remove('bg-slate-100', 'text-slate-600');
+      }
+    }
+
+    function toggleMoreMenu() {
+      const menu = document.getElementById('more-dropdown');
+      menu.classList.toggle('hidden');
+    }
+
+    function saveLog() {
+      const msg = document.getElementById('save-msg');
+      msg.classList.remove('hidden');
+      setTimeout(() => msg.classList.add('hidden'), 3000);
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const moreBtn = document.getElementById('more-menu-btn');
+      const moreDropdown = document.getElementById('more-dropdown');
+      if (moreBtn && moreDropdown && !moreBtn.contains(e.target) && !moreDropdown.contains(e.target)) {
+        moreDropdown.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
