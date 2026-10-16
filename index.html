@@ -285,6 +285,15 @@
         <textarea id="ed-prompt" rows="10" readonly class="w-full border border-slate-200 bg-slate-50 rounded-xl p-3 text-xs font-mono"></textarea>
         <button onclick="copyEl('ed-prompt', this)" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700">Copy prompt</button>
       </div>
+
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-base font-bold text-slate-900">Image mapping (GitHub)</h3>
+          <button onclick="loadRepoImages(true)" class="px-3 py-2.5 rounded-xl bg-slate-100 text-xs font-semibold hover:bg-slate-200">Re-scan GitHub folder</button>
+        </div>
+        <p class="text-sm text-slate-600">Each exercise picks the image in the <strong>Toncho-Tonchev/THP</strong> repo whose file name is at least 50% similar to its title (case, extension, spaces and symbols ignored). Add images to the repo, then press Re-scan.</p>
+        <div id="img-status"></div>
+      </div>
     </section>
 
     <!-- ============ TAB: GEM ============ -->
@@ -340,12 +349,107 @@ const store = {
 };
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function icons() { if (window.lucide) lucide.createIcons(); }
+// Images try a chain of sources: on error, move to the next one; hide only when all fail.
 function imgFail(el) {
-  if (el.dataset.fb && !el.dataset.tried) { el.dataset.tried = "1"; el.src = el.dataset.fb; }
-  else { el.style.display = "none"; }
+  let q = []; try { q = JSON.parse(el.dataset.fb || "[]"); } catch (e) {}
+  const next = q.shift();
+  if (next) { el.dataset.fb = JSON.stringify(q); el.src = next; } else { el.style.display = "none"; }
 }
 function img(src, fb, alt, cls) {
-  return '<img src="' + esc(src) + '" data-fb="' + esc(fb || "") + '" alt="' + esc(alt) + '" class="' + cls + '" onerror="imgFail(this)">';
+  const q = [].concat(fb || []).filter(Boolean);
+  return '<img src="' + esc(src) + '" data-fb="' + esc(JSON.stringify(q)) + '" alt="' + esc(alt) + '" class="' + cls + '" onerror="imgFail(this)">';
+}
+function imgChain(list, alt, cls) { return img(list[0], list.slice(1), alt, cls); }
+
+/* ---------- GitHub image mapping (fuzzy title matching) ---------- */
+const REPO = {
+  base: "https://raw.githubusercontent.com/Toncho-Tonchev/THP/main/",
+  api: "https://api.github.com/repos/Toncho-Tonchev/THP/contents/?ref=main",   // raw.githubusercontent.com has no folder listing, so the file names come from here
+  threshold: 0.5,
+  ttl: 6 * 3600 * 1000
+};
+const IMG_EXT = /\.(png|jpe?g|gif|webp|avif)$/i;
+const PLACEHOLDER = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240"><rect width="400" height="240" fill="#e2e8f0"/><text x="200" y="128" font-family="sans-serif" font-size="20" fill="#64748b" text-anchor="middle">Exercise image</text></svg>');
+let repoState = store.get("tp_repo_imgs", { t: 0, files: [] });
+let repoStatus = repoState.files.length ? "cached list" : "not loaded yet";
+
+// lower-case, drop the extension (files only) and everything that is not a letter or digit
+function normName(s, stripExt) {
+  s = String(s == null ? "" : s);
+  if (stripExt) s = s.replace(IMG_EXT, "");
+  return s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+}
+function bigramDice(a, b) {
+  if (a === b) return a ? 1 : 0;
+  if (a.length < 2 || b.length < 2) return 0;
+  const m = new Map();
+  for (let i = 0; i < a.length - 1; i++) { const g = a.substr(i, 2); m.set(g, (m.get(g) || 0) + 1); }
+  let hit = 0;
+  for (let i = 0; i < b.length - 1; i++) { const g = b.substr(i, 2), c = m.get(g) || 0; if (c > 0) { hit++; m.set(g, c - 1); } }
+  return (2 * hit) / ((a.length - 1) + (b.length - 1));
+}
+function levRatio(a, b) {
+  if (!a.length || !b.length) return 0;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return 1 - prev[b.length] / Math.max(a.length, b.length);
+}
+function similarity(a, b) { return (a && b) ? Math.max(bigramDice(a, b), levRatio(a, b)) : 0; }
+// "Bench Hip Thrust (Glute Bridge)" -> full title, the part outside the brackets, and the bracketed alias
+function titleVariants(t) {
+  t = String(t || ""); const v = [normName(t)], outside = t.replace(/\([^)]*\)/g, " ");
+  if (outside.trim() && outside !== t) v.push(normName(outside));
+  (t.match(/\(([^)]*)\)/g) || []).forEach(p => v.push(normName(p.slice(1, -1))));
+  return v.filter(Boolean);
+}
+function repoUrl(file) { return REPO.base + encodeURIComponent(file); }
+function matchExerciseImage(ex) {
+  let best = { file: null, score: 0 };
+  const own = ex.img && !/^https?:/i.test(ex.img) ? normName(ex.img, true) : "";   // a bare file name in the exercise JSON is an exact request
+  const variants = titleVariants(ex.title);
+  repoState.files.forEach(f => {
+    const n = normName(f, true); let s = 0;
+    if (own && n === own) s = 1; else variants.forEach(v => { s = Math.max(s, similarity(v, n)); });
+    if (s > best.score) best = { file: f, score: s };
+  });
+  return best;
+}
+function exSources(ex) {
+  const custom = /^https?:/i.test(ex.img || "") && !/images\.unsplash\.com/.test(ex.img);   // a URL you typed yourself is never overridden
+  const match = custom ? { file: null, score: 0 } : matchExerciseImage(ex);
+  const hit = !!match.file && match.score >= REPO.threshold;
+  const urls = [hit ? repoUrl(match.file) : null, ex.img, ex.fb, PLACEHOLDER].filter(Boolean);
+  return { urls: urls.filter((u, i) => urls.indexOf(u) === i), match, hit, custom };
+}
+// Warm-up cards only look for their own file name (warmup_*.jpg) in the repo, not a fuzzy title match.
+function warmSources(w) {
+  const want = normName(w.img, true), f = want ? repoState.files.find(x => normName(x, true) === want) : null;
+  const urls = [f ? repoUrl(f) : null, w.img, w.fb, PLACEHOLDER].filter(Boolean);
+  return urls.filter((u, i) => urls.indexOf(u) === i);
+}
+function loadRepoImages(force) {
+  if (!force && repoState.files.length && Date.now() - repoState.t < REPO.ttl) { repoStatus = "cached list"; renderImgStatus(); return; }
+  repoStatus = "loading…"; renderImgStatus();
+  fetch(REPO.api).then(r => { if (!r.ok) throw new Error("GitHub answered " + r.status); return r.json(); }).then(list => {
+    if (!Array.isArray(list)) throw new Error("unexpected response");
+    repoState = { t: Date.now(), files: list.filter(x => x && x.type === "file" && IMG_EXT.test(x.name)).map(x => x.name) };
+    store.set("tp_repo_imgs", repoState); repoStatus = "loaded from GitHub";
+    renderDay(); renderImgStatus();
+  }).catch(e => { repoStatus = "could not load (" + e.message + ")" + (repoState.files.length ? ", using the cached list" : ", using placeholders"); renderImgStatus(); });
+}
+function renderImgStatus() {
+  const el = document.getElementById("img-status"); if (!el) return;
+  const rows = [];
+  PLAN.days.forEach(d => d.exercises.forEach(ex => {
+    const s = exSources(ex), pct = Math.round(s.match.score * 100);
+    const res = s.custom ? "your own image URL" : s.hit ? esc(s.match.file) + " (" + pct + "%)" : "placeholder" + (s.match.file ? " (best was " + pct + "%)" : "");
+    rows.push('<tr class="border-b border-slate-100"><td class="py-1.5 pr-3 font-semibold">' + esc(ex.title) + '</td><td class="py-1.5 ' + (s.hit ? "text-emerald-700" : "text-slate-500") + '">' + res + "</td></tr>");
+  }));
+  el.innerHTML = '<p class="text-xs text-slate-500 mb-2">Status: ' + esc(repoStatus) + " • " + repoState.files.length + ' image file(s) found in the repo folder</p><div class="overflow-x-auto"><table class="w-full text-xs text-left"><tbody>' + rows.join("") + "</tbody></table></div>";
 }
 function todayStr() { return new Date().toLocaleDateString("en-CA"); }
 
@@ -582,7 +686,7 @@ function renderWarmup(d) {
   document.getElementById("warm-focus").textContent = d.warmupFocus ? "Focus: " + d.warmupFocus : "";
   document.getElementById("warm-grid").innerHTML = (d.warmup || []).map((w, i) =>
     '<div class="bg-white rounded-2xl border border-blue-100 overflow-hidden shadow-sm flex flex-col">' +
-      '<div class="ph h-40 relative overflow-hidden">' + img(w.img, w.fb, w.title, "w-full h-full object-cover") +
+      '<div class="ph h-40 relative overflow-hidden">' + imgChain(warmSources(w), w.title, "w-full h-full object-cover") +
       '<span class="absolute top-2 left-2 bg-slate-900/80 text-white text-[11px] font-semibold px-2 py-1 rounded-lg">Minute ' + (i + 1) + "</span></div>" +
       '<div class="p-4 space-y-3 flex-1 flex flex-col">' +
         '<div class="flex items-start justify-between gap-2"><h4 class="text-sm font-bold text-slate-900">' + esc(w.title) + '</h4>' +
@@ -606,7 +710,7 @@ function exCard(ex, i) {
       '<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">' + esc(ex.badge) + "</span></div>" +
     '<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">' +
       '<div class="lg:col-span-2 space-y-4">' +
-        '<div class="ph rounded-2xl overflow-hidden h-56 sm:h-72">' + img(ex.img, ex.fb, ex.title, "w-full h-full object-contain bg-white") + "</div>" +
+        '<div class="ph rounded-2xl overflow-hidden h-56 sm:h-72">' + imgChain(exSources(ex).urls, ex.title, "w-full h-full object-contain bg-white") + "</div>" +
         '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-4"><p class="font-bold text-slate-900 text-sm mb-2">Step-by-Step Directions</p>' +
           '<ol class="list-decimal list-inside space-y-1.5 text-sm text-slate-700">' + (ex.steps || []).map(s => "<li>" + esc(s) + "</li>").join("") + "</ol></div>" +
         '<div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2"><p class="font-bold text-slate-900 text-sm">Safety Checkpoints</p>' + checks + "</div>" +
@@ -849,7 +953,7 @@ function edRender() {
     '<button onclick="edEdit(' + i + ')" class="px-2.5 py-2 rounded-lg bg-white border border-slate-200 text-xs font-semibold hover:bg-slate-100">Edit</button>' +
     '<button onclick="edMove(' + i + ',-1)" class="px-2.5 py-2 rounded-lg bg-white border border-slate-200 text-xs hover:bg-slate-100" aria-label="Move up">↑</button>' +
     '<button onclick="edDelete(' + i + ')" class="px-2.5 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold hover:bg-rose-100">Delete</button></div>').join("") || '<p class="text-xs text-slate-400">No exercises on this day.</p>';
-  buildPrompt();
+  buildPrompt(); renderImgStatus();
 }
 function edDi() { return +document.getElementById("ed-day").value || 0; }
 function edEdit(i) { edMode = "exercise"; document.getElementById("ed-json").value = JSON.stringify(PLAN.days[edDi()].exercises[i], null, 2); edMsg("Editing exercise. Change the JSON, then press Save as exercise.", true); }
@@ -876,7 +980,7 @@ function edResetAll() { if (confirm("Reset all workouts and warm-ups to the orig
 
 /* ================= Init ================= */
 document.getElementById("sheet-url").value = store.get("tp_sheet", "");
-renderDay(); renderMeals(); loadForm(); renderCalendar(); renderHistory(); buildPrompt(); icons();
+renderDay(); renderMeals(); loadForm(); renderCalendar(); renderHistory(); buildPrompt(); icons(); loadRepoImages();
 </script>
 </body>
 </html>
